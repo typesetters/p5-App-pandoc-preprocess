@@ -1,0 +1,38 @@
+#!/usr/bin/env perl
+
+#  PODNAME: ppp
+# ABSTRACT: This is the executable to App::pandoc::preprocess
+
+use v5.14;
+use strict;
+use warnings;
+
+use FindBin;
+
+use lib "$FindBin::Bin/../lib";
+
+use Data::Printer;
+
+use App::pandoc::preprocess;
+
+BEGIN {
+  # TODO: check available: dot, ditaa, rdfdot
+}
+
+App::pandoc::preprocess::main;
+
+__END__
+
+=pod
+
+=begin wikidoc
+
+= SYNOPSIS
+
+App-pandoc-preprocess / ppp lets use dot/ditaa/rdfdot in pandoc code blocks.
+
+*Extremely* similar to <https://github.com/nichtich/ditaa-markdown>
+
+=end wikidoc
+
+=cut
