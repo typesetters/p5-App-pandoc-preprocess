@@ -1,21 +1,11 @@
 package App::pandoc::preprocess;
 
-#  PODNAME: pdoc
-# ABSTRACT: typeset pandoc documents with document-specific, default options
+#  PODNAME: App::pandoc::preprocess
+# ABSTRACT: Preprocess Pandoc before Processing Pandoc
 
 use v5.14;
 use strict;
 use warnings;
-use Moo;
-use Moo;
-use MooX::Options;
-
-option 'show_this_file' => (
-    is => 'ro',
-    format => 's',
-    required => 1,
-    doc => 'the file to display'
-);
 
 sub main {
   state $file = 0;
