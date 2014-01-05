@@ -15,7 +15,7 @@ BEGIN {
   # TODO: check available: dot, ditaa, rdfdot
 }
 
-App::pandoc::preprocess::main;
+App::pandoc::preprocess->new_with_options->run
 
 __END__
 
