@@ -7,67 +7,104 @@ use v5.14;
 use strict;
 use warnings;
 
-sub main {
-  state $file = 0;
+use Moo;
+use MooX::Options;
+use MooX::Types::MooseLike::Base qw| :all |;
 
-  sub gen {
-    my $cmd = {
-      dot   => sub {
-        my ($file, $filename) = @_;
-        `dot -Tpng -Gsize=1,2\\! -o image-$file.png $filename`;
-      },
-      ditaa => sub {
-        my ($file, $filename) = @_;
-        `ditaa $filename image-$file.png`; #--no-shadows --scale 0.4
-      },
-      rdfdot => sub {
-        my ($file, $filename) = @_;
-        `rdfdot -ttl $filename image-$file.png`; #--no-shadows --scale 0.4
-      },
-    };
+use Data::Printer;
 
-    my ($format, $content) = @_;
-    my $filename = "image-". ++$file .".$format";
-    open my $outfile, '>', $filename;
-    print {$outfile} $content;
-    $cmd->{$format}($file, $filename);
-    `mogrify -scale 75% image-$file.png`;
-    return "![](image-$file.png)" #\\
+use App::pandoc::preprocess::File;
+
+option inputfiles => (
+  is => 'ro',
+  isa => ArrayRef[Str],
+  # repeatable => 1,
+  required => 1,
+  format => 's@',
+);
+
+option output_directory => (
+  is => 'rw',
+  isa => Str,
+  format => 's',
+  default => sub { '.' },
+  doc => 'directory to write image files to',
+);
+
+option downscale_image => (
+  is => 'rw',
+  isa => Bool,
+  default => 1,
+  doc => 'downscale the image',
+);
+
+has preprocess_file => (
+  is => 'rw',
+  isa => Object #'App::pandoc::preprocess::File',
+);
+
+has matchers => (
+  is => 'ro',
+  isa => HashRef[RegexpRef],
+  default => sub {
+    +{
+      begin_of_line          => qr/^/sm,
+      codeblock_begin        => qr/^~+/sm,
+      codeblock_content      => qr/.*?/sm,
+      codeblock_end          => qr/^~+/sm,
+      format_specification   => qr/(?:dot|ditaa|rdfdot)/sm,
+      random_stuff_nongreedy => qr/.*?/sm,
+      possibly_spaces        => qr/\s*/sm,
+    }
   }
+);
 
-  $_ = do { local (@ARGV, $/) = @ARGV; <> };
+has matcher => (
+  is => 'lazy',
+  isa => RegexpRef,
+);
 
-  my $RE = {
-    begin_of_line          => qr/^/sm,
-    codeblock_begin        => qr/^~+/sm,
-    codeblock_content      => qr/.*?/sm,
-    codeblock_end          => qr/^~+/sm,
-    format_specification   => qr/(?:dot|ditaa|rdfdot)/sm,
-    random_stuff_nongreedy => qr/.*?/sm,
-    possibly_spaces        => qr/\s*/sm,
-  };
-
-
-  # This regex matches lines similar to:
-  # ~~~~ {.ditaa}
-  # <.ditaa content here>
-  # ~~~~
-  s[
+sub _build_matcher {
+  my $self = shift;
+  # This is a bit ugly, since we have to
+  # use the @{[]}-"tutle operator" everywhere...
+  my $qr =  qr/
     (?<MATCH>
-      $RE->{codeblock_begin} $RE->{possibly_spaces} \{
-        $RE->{random_stuff_nongreedy}
-        \.(?<format> $RE->{format_specification} )
-        $RE->{random_stuff_nongreedy}
+      @{[$self->matchers->{codeblock_begin}]} @{[$self->matchers->{possibly_spaces}]} \{
+        @{[$self->matchers->{random_stuff_nongreedy}]}
+        \.(?<format> @{[$self->matchers->{format_specification}]} )
+        @{[$self->matchers->{random_stuff_nongreedy}]}
       \}
-      $RE->{random_stuff_nongreedy}
-      $RE->{begin_of_line}(?<content> $RE->{codeblock_content} )
-      $RE->{codeblock_end}
+      @{[$self->matchers->{random_stuff_nongreedy}]}
+      @{[$self->matchers->{begin_of_line}]}(?<content> @{[$self->matchers->{codeblock_content}]} )
+      @{[$self->matchers->{codeblock_end}]}
     )
-  ][
-    gen( $+{format} => $+{content} )
-  ]gosemix;
+  /x;
+}
 
-  say $_
+sub slurp_file {
+  my $self = shift;
+  return $_ = do { local (@ARGV, $/) = @{$self->inputfiles}; <> };
+}
+
+sub generator { # needs to return the include line for pandoc
+  my $self = shift;
+  my ($format, $content) = @_;
+  my $file = App::pandoc::preprocess::File->new(
+    current_format => $format,
+    content => $content,
+    output_directory => $self->output_directory,
+    downscale_image => 1,
+  );
+  $file->current_image_include;
+}
+
+sub run {
+  my $self = shift;
+  $_ = $self->slurp_file;           # get (whole) STDIN/File(s) into $_
+  my $matcher = $self->matcher;     # $matcher will set $+{format} and $+{content}
+  s/$matcher/$self->generator( $+{format} => $+{content} )/posixgems; # transmute $_ and (as a side-effect) write image files
+  say $_                            # you will have to output modified $_ to STDOUT again
 }
 
 1;
