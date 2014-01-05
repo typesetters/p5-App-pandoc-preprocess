@@ -19,10 +19,10 @@ state $file_count = 0;
 
 sub BUILDARGS {
   my ( $class, @args ) = @_;
- 
+
   die "Wrong arguments: $!" if @args % 2 == 1;
- 
-  return { 
+
+  return {
     file_count => ++$file_count,
     @args
   };
