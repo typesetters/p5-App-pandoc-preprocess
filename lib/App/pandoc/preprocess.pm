@@ -14,6 +14,7 @@ use MooX::Types::MooseLike::Base qw| :all |;
 use Data::Printer;
 
 use App::pandoc::preprocess::File;
+use App::pandoc::preprocess::Checks;
 
 option inputfiles => (
   is => 'ro',
