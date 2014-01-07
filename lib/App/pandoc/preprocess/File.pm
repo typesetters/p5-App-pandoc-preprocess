@@ -64,7 +64,7 @@ has image_generator => (
       },
       ditaa => sub {
         my $self = shift;
-        my $cmd = "ditaa @{[$self->current_image]} @{[$self->output_filename]}"; #`; #--no-shadows --scale 0.4
+        my $cmd = "ditaa -e UTF-8 @{[$self->current_image]} @{[$self->output_filename]}"; #`; #--no-shadows --scale 0.4
         qx/$cmd/;
       },
       rdfdot => sub {
