@@ -38,6 +38,25 @@ option downscale_image => (
   doc => 'downscale the image',
 );
 
+has encoding_check => (
+  is => 'ro',
+  isa => Num,
+  default => sub {
+    `grep -c file.encoding \$(which ditaa)` > 0 or die q{
+      Your ditaa executable
+        a) could not be found in your $PATH or
+        b) it lacks an option called '-Dfile.encoding=UTF-8' or
+        c) your\'re lacking java altogehter
+
+      Please add an executable called `ditaa` with the following content to your $PATH:
+        #!/bin/sh
+        java -Dfile.encoding=UTF-8 -jar /path/to/ditaa_XYZ.jar
+
+      Abort.
+    }
+  }
+);
+
 has preprocess_file => (
   is => 'rw',
   isa => Object #'App::pandoc::preprocess::File',
