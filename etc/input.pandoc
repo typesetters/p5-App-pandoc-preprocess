@@ -31,7 +31,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 ~~~~~ {.ditaa}
 
 +-----------------+       +--------+           +--------------------+
-| markdown source |------>| ppp    |------*--->| processed markdown |
+| markdown source |------>| ppp    |------*--->| pröcessed markdown |
 +-----------------+       +--------+      |    +--------------------+
                               |           \--->| image files        |
                     +------------------+       +--------------------+
