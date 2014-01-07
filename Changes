@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.3.1     2014-01-07 17:32:20 Europe/Berlin
+
+  - Pluginbundle should finally work and this module should get indexed
+
 0.3.0     2014-01-07 16:59:41 Europe/Berlin
   
   - Check environment for installed programs (rudimentrily)
