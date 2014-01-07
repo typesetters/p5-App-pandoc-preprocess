@@ -1,3 +1,4 @@
 .build
 App-pandoc-preprocess-*
 var
+image*
