@@ -11,10 +11,6 @@ use lib "$FindBin::Bin/../lib";
 
 use App::pandoc::preprocess;
 
-BEGIN {
-  # TODO: check available: dot, ditaa, rdfdot
-}
-
 App::pandoc::preprocess->new_with_options->run
 
 __END__
