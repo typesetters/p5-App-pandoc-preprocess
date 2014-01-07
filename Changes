@@ -1,5 +1,9 @@
 {{$NEXT}}
   
+  - code blocks can appear in lists, too
+
+0.2.2     2014-01-07 16:39:38 Europe/Berlin
+  
   - Add check for ditaa executable
 
 0.2.1     2014-01-06 13:01:48 Europe/Berlin
