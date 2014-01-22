@@ -9,7 +9,16 @@ package App::pandoc::preprocess;
 
 = USAGE
 
-cat chapters/input-*.pandoc | ppp | pandoc -o output.pdf --smart [more pandoc options...]
+    cat chapters/input-*.pandoc | ppp | pandoc -o output.pdf --smart [more pandoc options...]
+
+Additionally see `etc/input.txt` for concrete examples.
+
+= PREREQUISITES
+
+* dot/neato (neato is new!)
+* rdfdot
+* ditaa
+* Image::Magick (for downscaling of large images)
 
 = BACKGROUND
 

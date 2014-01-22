@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - add documentation
+
 0.4.0     2014-01-22 15:52:41 Europe/Berlin
 
   - Refactor/Rewrite: Use flip-flop operator, major simplifications

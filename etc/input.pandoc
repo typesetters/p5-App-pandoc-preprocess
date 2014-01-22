@@ -12,7 +12,7 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 * Code
 
-* in list
+* in lists should not be set:
     ~~~~~ {.dot .Grankdir:LR}
 
     digraph {
@@ -50,7 +50,7 @@ graph G {
 ~~~~~
 
 <#ifdef HANDOUT> 
-Explanation of the feature ... 
+Explanation of the gpp feature ...
 <#endif>
 
 # Test 3
