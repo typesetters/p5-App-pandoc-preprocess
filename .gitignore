@@ -2,3 +2,5 @@
 App-pandoc-preprocess-*
 var
 image*
+tmp
+tmp2
