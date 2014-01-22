@@ -1,26 +1,78 @@
 #!/usr/bin/env perl
 
+package main;
+
 #  PODNAME: ppp
-# ABSTRACT: This is the executable to App::pandoc::preprocess
+# ABSTRACT: Preprocess Pandoc before Processing Pandoc
 
 use v5.14;
 use strict;
 use warnings;
+
 use FindBin;
+
 use lib "$FindBin::Bin/../lib";
 
-use App::pandoc::preprocess;
+use Data::Printer;
 
-App::pandoc::preprocess->new_with_options->run
+state $fileno = 0;
+state $outfile;
+state $format;
+state @children;
 
-__END__
+BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
-=begin wikidoc
+MAIN: {
+  while(<>) {
+    if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato).*\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
+        $start ? begin_ppp() : $end ? end_ppp() : print {$outfile} $_
+    } else {
+      print
+    }
+  }
+}
 
-= SYNOPSIS
+SUBS: {
+  sub begin_ppp {
+    $fileno++;
+    $format = $+{format};
+    open $outfile, '>', "tmp/image-$fileno.$format"
+  }
 
-App-pandoc-preprocess / ppp lets use dot/ditaa/rdfdot in pandoc code blocks.
+  sub end_ppp {
+    close $outfile;
 
-*Extremely* similar to <https://github.com/nichtich/ditaa-markdown>
+    if( my $child = fork == 0 ) {
+       push @children, $child;
+       $format =~ /^ditaa$/ and do {
+         system("ditaa tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/ditaa.log");
+       };
+       $format =~ /^rdfdot$/ and do {
+         system("rdfdot -ttl tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/rdfdot.log");
+         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+       };
+       $format =~ /^dot$/ and do {
+         system("dot -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
+         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+       };
+       $format =~ /^neato$/ and do {
+         system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
+         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+       };
+       exit 0;
+    }
 
-=end wikidoc
+    $format =~ /^ditaa$/  and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
+    $format =~ /^rdfdot$/ and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
+    $format =~ /^dot$/    and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
+    $format =~ /^neato$/  and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
+    $format = '';
+  }
+}
+
+END {
+  while (1) {
+    my $child = waitpid(-1, 0);
+    last if $child == -1;       # No more outstanding children
+  }
+}
