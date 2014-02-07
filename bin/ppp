@@ -77,7 +77,7 @@ SUBS: {
     $format =
       "![" . (exists $attrs{title} ? $attrs{title} : '' )
            . (exists $attrs{label} ? "\\label{$attrs{label}}" : '' ).
-      "]"  . 
+      "]"  .
       "(tmp/image-$fileno.png)" .
       (exists $attrs{inline} ? '\\ ' : '')
     ;
