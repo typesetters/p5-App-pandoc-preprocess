@@ -1,18 +1,18 @@
 # ppp
 
-`ppp` let's you use ditaa, dot, rdfdot and neato directly in your pandoc sources and will transform these into beautiful graphs.
+`ppp` let's you use [ditaa](http://ditaa.sourceforge.net/), [dot](http://www.graphviz.org/pdf/dotguide.pdf), [rdfdot](https://metacpan.org/release/RDF-Trine-Exporter-GraphViz) and [neato](http://www.graphviz.org/pdf/neatoguide.pdf) directly in your [pandoc](http://johnmacfarlane.net/pandoc/) sources and will transform these into beautiful graphs.
 
 ## Usage
 
     cat chapters/input-*.pandoc | ppp | pandoc -o output.pdf --smart [more pandoc options...]
 
-The good thing here: if you leave `ppp` out of the pipe-chain, your documents are still typeset nicely -- except you have UML in code blocks.
+The good thing here: if you leave `ppp` out of the pipe-chain, your documents are still typeset nicely -- except you have ASCII-UML in code blocks.
 
-See `etc/input.pandoc` for concrete usage examples.
+See `etc/input.pandoc` for concrete usage examples and [cpan](https://metacpan.org/pod/App::pandoc::preprocess) for more information.
 
 ## Prerequisites
 
-* dot/neato (neato is new!)
+* dot/neato
 * rdfdot
 * ditaa
 * Image::Magick (for downscaling of large images)

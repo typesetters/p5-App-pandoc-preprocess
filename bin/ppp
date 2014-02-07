@@ -19,12 +19,13 @@ state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
+state %attributes;
 
 BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
 MAIN: {
   while(<>) {
-    if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato).*\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
+    if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato)(?<attributes>.*)\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
         $start ? begin_ppp() : $end ? end_ppp() : print {$outfile} $_
     } else {
       print
@@ -36,36 +37,51 @@ SUBS: {
   sub begin_ppp {
     $fileno++;
     $format = $+{format};
+    $attributes{$fileno.$format} = $+{attributes};
     open $outfile, '>', "tmp/image-$fileno.$format"
   }
 
   sub end_ppp {
     close $outfile;
 
+    my %attrs = map { /(.+?)=(["']?.+["']?)/ ? ($1 => $2) : ($_ => 1) } split /\s+\./, $attributes{$fileno.$format};
     if( my $child = fork == 0 ) {
        push @children, $child;
        $format =~ /^ditaa$/ and do {
-         system("ditaa tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/ditaa.log");
+         my $cmd =
+          "ditaa " .
+          (exists $attrs{"rounded-corners"} ? '--round-corners ' : ' ') .
+          (exists $attrs{"no-shadows"}      ? '--no-shadows '    : ' ') .
+          (exists $attrs{"no-separation"}   ? '--no-separation ' : ' ') .
+          (exists $attrs{"no-antialias"}    ? '--no-antialias '  : ' ') .
+          " tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/ditaa.log"
+        ;
+        system($cmd);
+        system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        $format =~ /^rdfdot$/ and do {
          system("rdfdot -ttl tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/rdfdot.log");
-         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        $format =~ /^dot$/ and do {
          system("dot -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
-         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        $format =~ /^neato$/ and do {
          system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
-         system("mogrify -scale 60% tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log");
+         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        exit 0;
     }
 
-    $format =~ /^ditaa$/  and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
-    $format =~ /^rdfdot$/ and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
-    $format =~ /^dot$/    and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
-    $format =~ /^neato$/  and say STDOUT "![Abbildung $fileno](tmp/image-$fileno.png)";
+    $format =
+      "![" . (exists $attrs{title} ? $attrs{title} : '' )
+           . (exists $attrs{label} ? "\\label{$attrs{label}}" : '' ).
+      "]"  . 
+      "(tmp/image-$fileno.png)" .
+      (exists $attrs{inline} ? '\\ ' : '')
+    ;
+    say STDOUT $format;
     $format = '';
   }
 }
