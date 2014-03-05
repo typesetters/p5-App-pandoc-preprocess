@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>P5-app-pandoc-preprocess by xdbr</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>P5-app-pandoc-preprocess</h1>
+        <p>Preprocess Pandoc before Processing Pandoc</p>
+
+        <p class="view"><a href="https://github.com/xdbr/p5-App-pandoc-preprocess">View the Project on GitHub <small>xdbr/p5-App-pandoc-preprocess</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/xdbr/p5-App-pandoc-preprocess/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/xdbr/p5-App-pandoc-preprocess/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/xdbr/p5-App-pandoc-preprocess">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="ppp" class="anchor" href="#ppp"><span class="octicon octicon-link"></span></a>ppp</h1>
+
+<p><code>ppp</code> let's you use <a href="http://ditaa.sourceforge.net/">ditaa</a>, <a href="http://www.graphviz.org/pdf/dotguide.pdf">dot</a>, <a href="https://metacpan.org/release/RDF-Trine-Exporter-GraphViz">rdfdot</a> and <a href="http://www.graphviz.org/pdf/neatoguide.pdf">neato</a> and <a href="http://yuml.me">yUML</a> <em>directly</em> in your <a href="http://johnmacfarlane.net/pandoc/">pandoc</a> sources and will transform these into beautiful graphs.</p>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<pre><code>cat chapters/input-*.pandoc | ppp | pandoc -o output.pdf --smart [more pandoc options...]
+</code></pre>
+
+<p>The good thing here: if you leave <code>ppp</code> out of the pipe-chain, your documents are still typeset nicely -- except you have ASCII-UML in code blocks.</p>
+
+<p>See <code>etc/input.pandoc</code> for concrete usage examples and <a href="https://metacpan.org/pod/App::pandoc::preprocess">cpan</a> for more information.</p>
+
+<h2>
+<a name="prerequisites" class="anchor" href="#prerequisites"><span class="octicon octicon-link"></span></a>Prerequisites</h2>
+
+<ul>
+<li>dot/neato</li>
+<li>rdfdot</li>
+<li>ditaa</li>
+<li>Image::Magick (for downscaling of large images)</li>
+<li>the yUML commandline wrapper to the webservice is bundled with this perl-Module and comes from <a href="https://github.com/wandernauta/yuml">here</a>
+</li>
+</ul><h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>WTFPL</p>
+
+<h2>
+<a name="credits" class="anchor" href="#credits"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<p>This package was inspired by <a href="https://github.com/nichtich/ditaa-markdown">this great idea</a>.</p>
+
+<p>the yUML-CLI wrapper by: <a href="https://github.com/wandernauta/yuml">https://github.com/wandernauta/yuml</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/xdbr">xdbr</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
