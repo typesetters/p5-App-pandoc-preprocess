@@ -8,7 +8,7 @@
 
 The good thing here: if you leave `ppp` out of the pipe-chain, your documents are still typeset nicely -- except you have ASCII-UML in code blocks.
 
-See `etc/input.pandoc` for concrete usage examples and [cpan](https://metacpan.org/pod/App::pandoc::preprocess) for more information.
+See `ppp-Documentation.pandoc` for concrete usage examples and [cpan](https://metacpan.org/pod/App::pandoc::preprocess) for more information.
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@ See `etc/input.pandoc` for concrete usage examples and [cpan](https://metacpan.o
 * rdfdot
 * ditaa
 * Image::Magick (for downscaling of large images)
-* the yUML commandline wrapper to the webservice is bundled with this perl-Module and comes from [here](https://github.com/wandernauta/yuml)
+* [yuml](https://github.com/wandernauta/yuml) (install as python module using `pip install yuml` or `easy_install yuml`)
 
 ## License
 WTFPL
