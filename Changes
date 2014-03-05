@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - Assume defaults for yuml unless given
+
 0.6.3     2014-03-05 17:26:09 Europe/Berlin
 
   - This is stupid: simply rely on yuml's own pythong-package-installation and leave that executable out!

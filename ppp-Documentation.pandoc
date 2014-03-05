@@ -279,7 +279,7 @@ With *yUML* as the renderer, setting `.type=class` and using the style `.style=b
 
 \normalsize
 
-~~~~ {.yuml .style=boring .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
+~~~~ {.yuml .style=boring .type=class .direction=LR .title=yUML class diagram .label=fig:yuml-class-diagram}
 [Customer] +1 ->        *[Order]
 [Order]   ++1 -items>   *[LineItem]
 [Order]  -0..1>     [PaymentMethod]
