@@ -250,7 +250,7 @@ graph G {
 
 # yUML
 
-yUML needs a network connection and uses <http://yuml.me> as the rendering service.
+yUML needs a network connection and uses http://yuml.me as the rendering service.
 
 ## yUML Options
 Options specific to yUML can be:
