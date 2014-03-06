@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - Update documentation
+
 0.6.5     2014-03-06 00:09:19 Europe/Berlin
 
   - Assume defaults for yuml unless given
