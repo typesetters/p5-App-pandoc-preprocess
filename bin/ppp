@@ -26,7 +26,7 @@ BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
 MAIN: {
   while(<>) {
-    if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml)(?<attributes>.*)\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
+    if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml|plantuml)(?<attributes>.*)\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
         $start ? begin_ppp() : $end ? end_ppp() : print {$outfile} $_
     } else {
       print
@@ -69,7 +69,7 @@ SUBS: {
          system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        $format =~ /^neato$/ and do {
-         system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
+         system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/neato.log");
          system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        $format =~ /^yuml$/ and do {
@@ -80,8 +80,11 @@ SUBS: {
            (exists $attrs{"direction"}  ? "--dir   @{[$attrs{direction} ]} ": '--dir=LR ') .
            " --in tmp/image-$fileno.$format --out tmp/image-$fileno.png 2>&1 >>tmp/yuml.log"
          ;
-         ### $cmd
          system($cmd);
+         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+       };
+       $format =~ /^plantuml$/ and do {
+         system("plantuml -tpng -charset UTF-8 tmp/image-$fileno.$format 2>&1 >>tmp/plantuml.log");
          system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
        };
        exit 0;

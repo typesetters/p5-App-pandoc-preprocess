@@ -18,7 +18,9 @@ _Bonus on top: Leaving out `ppp` form the typesetting pipeline will still render
 
 ------------------------------------------------------------------------------
 
-
+\newpage
+\tableofcontents
+\newpage
 
 # General usage
 
@@ -41,6 +43,7 @@ The renderers available to `ppp` are:
 * dot
 * neato
 * rdfdot
+* plantuml
 
 ## General Options
 This is a list of the general options, compatible with any type of renderer:
@@ -346,6 +349,151 @@ Lastly, using `.type=activity` and `.style=plain` the following example produces
 [Company] 1 employer <@>--- "< works for" employee 1..n [Person] 1 boss --- flunkies 1..* [Person]
 ~~~~ -->
 
+------------------------------------------------------------------------------
+
+
+\newpage
+
+
+# plantuml
+
+plantuml -- based on graphviz --, has an extensive feature set
+
+## plantuml Options
+
+* *General Options*
+
+## plantuml Examples
+
+### plantuml Example 1
+
+With *plantuml* as the renderer, the following markup produces Figure \ref{fig:plantuml-example-1}.
+
+\scriptsize
+
+    ~~~~ {.plantuml}
+    @startuml
+    scale 350 width
+    [*] --> NotShooting
+
+    state NotShooting {
+      [*] --> Idle
+      Idle --> Configuring : EvConfig
+      Configuring --> Idle : EvConfig
+    }
+
+    state Configuring {
+      [*] --> NewValueSelection
+      NewValueSelection --> NewValuePreview : EvNewValue
+      NewValuePreview --> NewValueSelection : EvNewValueRejected
+      NewValuePreview --> NewValueSelection : EvNewValueSaved
+
+      state NewValuePreview {
+         State1 -> State2
+      }
+
+    }
+    @enduml
+    ~~~~
+
+\normalsize
+
+~~~~ {.plantuml .title=PlantUML Example 1 .label=fig:plantuml-example-1}
+@startuml
+scale 350 width
+[*] --> NotShooting
+
+state NotShooting {
+  [*] --> Idle
+  Idle --> Configuring : EvConfig
+  Configuring --> Idle : EvConfig
+}
+
+state Configuring {
+  [*] --> NewValueSelection
+  NewValueSelection --> NewValuePreview : EvNewValue
+  NewValuePreview --> NewValueSelection : EvNewValueRejected
+  NewValuePreview --> NewValueSelection : EvNewValueSaved
+
+  state NewValuePreview {
+     State1 -> State2
+  }
+
+}
+@enduml
+~~~~
+
+\newpage
+
+### plantuml Example 2
+
+If the colors don't match your taste exactly, add `skinparam monochrome true` to retrieve Figure \ref{fig:plantuml-example-2}.
+
+\scriptsize
+
+    ~~~~ {.plantuml}
+    @startuml
+
+    skinparam monochrome true
+
+    actor User
+    participant "First Class" as A
+    participant "Second Class" as B
+    participant "Last Class" as C
+
+    User -> A: DoWork
+    activate A
+
+    A -> B: Create Request
+    activate B
+
+    B -> C: DoWork
+    activate C
+    C --> B: WorkDone
+    destroy C
+
+    B --> A: Request Created
+    deactivate B
+
+    A --> User: Done
+    deactivate A
+
+    @enduml
+    ~~~~
+
+\normalsize
+
+~~~~ {.plantuml .title=PlantUML Example 2 .label=fig:plantuml-example-2}
+@startuml
+
+skinparam monochrome true
+
+actor User
+participant "First Class" as A
+participant "Second Class" as B
+participant "Last Class" as C
+
+User -> A: DoWork
+activate A
+
+A -> B: Create Request
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: Request Created
+deactivate B
+
+A --> User: Done
+deactivate A
+
+@enduml
+~~~~
+
+\newpage
 
 
 ------------------------------------------------------------------------------
@@ -449,6 +597,8 @@ yUML        <http://yuml.me/>
             <https://github.com/wandernauta/yuml>
             
 rdfdot      <https://metacpan.org/pod/RDF::Trine::Exporter::GraphViz>
+
+plantuml    <http://plantuml.sourceforge.net/>
 
 -----------------------------------------------------------------------------
 
