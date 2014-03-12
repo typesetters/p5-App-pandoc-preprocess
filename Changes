@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.7.1     2014-03-12 23:55:30 Europe/Berlin
+
+  - errors branching: bump release: (finally) add plantuml as renderer
+
 0.7.0     2014-03-12 23:52:00 Europe/Berlin
 
   - add plantuml as renderer
