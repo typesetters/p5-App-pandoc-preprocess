@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+  - add plantuml as renderer
+
 0.6.6     2014-03-06 14:21:31 Europe/Berlin
 
   - Update documentation
