@@ -1,5 +1,7 @@
 {{$NEXT}}
 
+0.7.0     2014-03-12 23:52:00 Europe/Berlin
+
   - add plantuml as renderer
 
 0.6.6     2014-03-06 14:21:31 Europe/Berlin
