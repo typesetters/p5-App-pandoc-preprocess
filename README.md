@@ -17,6 +17,7 @@ See `ppp-Documentation.pandoc` for concrete usage examples and [cpan](https://me
 * ditaa
 * Image::Magick (for downscaling of large images)
 * [yuml](https://github.com/wandernauta/yuml) (install as python module using `pip install https://github.com/wandernauta/yuml/zipball/master` or `easy_install https://github.com/wandernauta/yuml/zipball/master`)
+* [plantuml](http://plantuml.sourceforge.net/)
 
 ## License
 WTFPL
