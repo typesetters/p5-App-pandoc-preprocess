@@ -1,6 +1,6 @@
 # ppp
 
-`ppp` let's you use [ditaa](http://ditaa.sourceforge.net/), [dot](http://www.graphviz.org/pdf/dotguide.pdf), [rdfdot](https://metacpan.org/release/RDF-Trine-Exporter-GraphViz) and [neato](http://www.graphviz.org/pdf/neatoguide.pdf) and [yUML](http://yuml.me) *directly* in your [pandoc](http://johnmacfarlane.net/pandoc/) sources and will transform these into beautiful graphs.
+`ppp` let's you use [ditaa](http://ditaa.sourceforge.net/), [dot](http://www.graphviz.org/pdf/dotguide.pdf), [rdfdot](https://metacpan.org/release/RDF-Trine-Exporter-GraphViz) and [neato](http://www.graphviz.org/pdf/neatoguide.pdf), [yUML](http://yuml.me) and, finally, [plantuml](http://plantuml.sourceforge.net/) *directly* in your [pandoc](http://johnmacfarlane.net/pandoc/) sources and will transform these into beautiful graphs.
 
 ## Usage
 
