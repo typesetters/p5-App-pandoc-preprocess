@@ -24,6 +24,9 @@ state %attributes;
 
 BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
+my $img_dir = "tmp/";
+my $log_dir = "tmp/";
+
 MAIN: {
   while(<>) {
     if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml|plantuml)(?<attributes>.*)\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
@@ -42,6 +45,25 @@ SUBS: {
     open $outfile, '>', "tmp/image-$fileno.$format"
   }
 
+  sub scale_image {
+    my ($attrs, $image) = @_;
+
+    if ($attrs->{dpi}) {
+        my $dpi_x = $attrs->{dpi} =~ /^(\d+)x(\d+)$/ ? $1 : $attrs->{dpi};
+        my $dpi_y = $attrs->{dpi} =~ /^(\d+)x(\d+)$/ ? $2 : $attrs->{dpi};
+        my $cmd = "convert -units PixelsPerInch -density "
+                . sprintf("%.0fx%.0f ", $dpi_x, $dpi_y)
+                . "$img_dir/$image $img_dir/$image 2>&1 >> $log_dir/convert.log";
+        system($cmd);
+    }
+
+    if ($attrs->{scale}) {
+        my $cmd = "mogrify -scale ".$attrs->{scale}
+                . " $img_dir/$image 2>&1 >> $log_dir/mogrify.log";
+        system($cmd);
+    }
+  }
+
   sub end_ppp {
     close $outfile;
 
@@ -56,21 +78,21 @@ SUBS: {
           (exists $attrs{"no-separation"}   ? '--no-separation ' : ' ') .
           (exists $attrs{"no-antialias"}    ? '--no-antialias '  : ' ') .
           " tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/ditaa.log"
-        ;
-        system($cmd);
-        system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         ;
+         system($cmd);
+         scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^rdfdot$/ and do {
          system("rdfdot -ttl tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/rdfdot.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^dot$/ and do {
          system("dot -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^neato$/ and do {
          system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/neato.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^yuml$/ and do {
          my $cmd =
@@ -81,11 +103,11 @@ SUBS: {
            " --in tmp/image-$fileno.$format --out tmp/image-$fileno.png 2>&1 >>tmp/yuml.log"
          ;
          system($cmd);
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^plantuml$/ and do {
          system("plantuml -tpng -charset UTF-8 tmp/image-$fileno.$format 2>&1 >>tmp/plantuml.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
+         scale_image(\%attrs, "image-$fileno.png");
        };
        exit 0;
     }
