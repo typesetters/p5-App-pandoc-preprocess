@@ -87,7 +87,13 @@ SUBS: {
          scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^dot$/ and do {
-         system("dot -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
+         my $dpi = $attrs{dpi};
+         if ($dpi) {
+           $dpi =~ s/x.*//;
+           $dpi = "-Gdpi=$dpi";
+         }  
+         my $cmd = "dot -Tpng $dpi -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log";
+         system($cmd);
          scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^neato$/ and do {
