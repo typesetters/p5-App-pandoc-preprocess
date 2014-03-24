@@ -87,7 +87,7 @@ SUBS: {
          scale_image(\%attrs, "image-$fileno.png");
        };
        $format =~ /^dot$/ and do {
-         my $dpi = $attrs{dpi};
+         my $dpi = $attrs{dpi} || '';
          if ($dpi) {
            $dpi =~ s/x.*//;
            $dpi = "-Gdpi=$dpi";
