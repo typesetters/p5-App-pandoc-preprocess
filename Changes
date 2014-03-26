@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+  - new attribute 'dpi' for scaling
+  - create image directory 'tmp' if it does not exist
+  - code refactoring
+
 0.7.2     2014-03-13 10:50:49 Europe/Berlin
   
   - update documentation
