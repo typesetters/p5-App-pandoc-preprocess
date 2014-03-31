@@ -9,31 +9,11 @@ use v5.14;
 use strict;
 use warnings;
 
-use FindBin;
-
-use lib "$FindBin::Bin/../lib";
-
-# use Moo;
-# use Data::Printer;
-use Smart::Comments;
-
-no autovivification;
-
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
-
-# my $rx = {
-#   begin => {
-#     code => qr/^[`~]{3,}/,
-#     ppp => qr/\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml|plantuml)(?<attributes>.*)\}.*/
-#   },
-#   end => {
-#     
-#   }
-# }
 
 BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
