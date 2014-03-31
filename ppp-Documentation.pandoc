@@ -108,6 +108,18 @@ Using ditaa, the following markup will produce Figure \ref{fig:pipeline-overview
                     +------------------+
 ~~~~~
 
+~~~~~ {.ditaa .rounded-corners .no-shadows .title="The ppp and pandoc pipeline" .label=fig:pipeline-overview  .no-antialias .no-separation}
++-----------------+       +--------+           +--------------------+
+| markdown source |------>| ppp    |------*--->| pröcessed markdown |
++-----------------+       +--------+      |    +--------------------+
+                              |           \--->| image files        |
+                    +------------------+       +--------------------+
+                    | diagram creation |
+                    +------------------+
+                    | ditaa/dot/rdfdot |
+                    +------------------+
+~~~~~
+
 As a contrast, turning off several options, ditaa will produce an output as in Figure \ref{fig:pipeline-overview-2}:
 
 
@@ -188,7 +200,7 @@ With `dot` as the *renderer*, the following markup produces the figure as seen i
 ~~~~~ {.dot .scale=50% .title=dot Finite State Automaton .label=fig:dot-fsa}
 digraph finite_state_machine {
   rankdir=LR;
-  size="8,5"
+  //size="8,5"
   node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
   node [shape = circle];
   LR_0 -> LR_2 [ label = "SS(B)" ];
@@ -229,7 +241,7 @@ The following example produces Figure \ref{fig:neato-diagram}.
 
 \scriptsize
 
-    ~~~~~ {.neato .scale=50% .title=neato diagram .label=fig:neato-diagram}
+    ~~~~~ {.neato .title=neato diagram .label=fig:neato-diagram}
     graph G {
       n0 -- n1 -- n2 -- n3 -- n0;
     }
@@ -237,7 +249,7 @@ The following example produces Figure \ref{fig:neato-diagram}.
 
 \normalsize
 
-~~~~~ {.neato .scale=50% .title=neato diagram .label=fig:neato-diagram}
+~~~~~ {.neato .title=neato diagram .label=fig:neato-diagram}
 graph G {
   n0 -- n1 -- n2 -- n3 -- n0;
 }
@@ -259,7 +271,7 @@ yUML needs a network connection and uses http://yuml.me as the rendering service
 Options specific to yUML can be:
 
 * `.type=`: any of `[` `class`, `activity`, `usecase` `]`
-* `.style=`: any of `[` `scruffy`, `boring`, `plain` `]`
+* `.style=`: any of `[` `scruffy`, `nofunky`, `plain` `]`
 * `.direction=`: any of `[` `LR`, `RL`, `TD`, `]`
 
 <!-- * `.format=`: `png`, `pdf`, `jpg`, `svg` -->
@@ -269,11 +281,11 @@ Options specific to yUML can be:
 
 ### yUML Class diagrams
 
-With *yUML* as the renderer, setting `.type=class` and using the style `.style=boring`, the following markup produces Figure \ref{fig:yuml-class-diagram}.
+With *yUML* as the renderer, setting `.type=class` and using the style `.style=nofunky`, the following markup produces Figure \ref{fig:yuml-class-diagram}.
 
 \scriptsize
 
-    ~~~~ {.yuml .style=boring .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
+    ~~~~ {.yuml .style=nofunky .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
 
     [Customer] +1 ->        *[Order]
     [Order]   ++1 -items>   *[LineItem]
@@ -282,7 +294,7 @@ With *yUML* as the renderer, setting `.type=class` and using the style `.style=b
 
 \normalsize
 
-~~~~ {.yuml .style=boring .type=class .direction=LR .title=yUML class diagram .label=fig:yuml-class-diagram}
+~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=44% .title=yUML class diagram .label=fig:yuml-class-diagram}
 [Customer] +1 ->        *[Order]
 [Order]   ++1 -items>   *[LineItem]
 [Order]  -0..1>     [PaymentMethod]
@@ -305,7 +317,7 @@ With `scruffy` style and `.type=usecase`, the following example produces Figure 
 
 \normalsize
 
-~~~~ {.yuml .style=scruffy .type=usecase .title=yUML usecase diagram .label=fig:yuml-usecase-diagram}
+~~~~ {.yuml .style=scruffy .type=usecase .scale=44% .title=yUML usecase diagram .label=fig:yuml-usecase-diagram}
 // Cool Use Case Diagram
 [Customer]-(Make Cup of Tea)
 (Make Cup of Tea)<(Add Milk)
@@ -333,7 +345,7 @@ Lastly, using `.type=activity` and `.style=plain` the following example produces
 
 
 
-<!-- ~~~~ {.yuml .style=boring .type=class }
+<!-- ~~~~ {.yuml .style=nofunky .type=class }
 [               Company
              <<singleton>>
  ===================================
@@ -371,7 +383,7 @@ With *plantuml* as the renderer, the following markup produces Figure \ref{fig:p
 
 \scriptsize
 
-    ~~~~ {.plantuml}
+    ~~~~ {.plantuml .scale=60% .title=PlantUML Example 1 .label=fig:plantuml-example-1}
     @startuml
     scale 350 width
     [*] --> NotShooting
@@ -398,7 +410,7 @@ With *plantuml* as the renderer, the following markup produces Figure \ref{fig:p
 
 \normalsize
 
-~~~~ {.plantuml .title=PlantUML Example 1 .label=fig:plantuml-example-1}
+~~~~ {.plantuml .scale=60% .title=PlantUML Example 1 .label=fig:plantuml-example-1}
 @startuml
 scale 350 width
 [*] --> NotShooting
@@ -463,7 +475,7 @@ If the colors don't match your taste exactly, add `skinparam monochrome true` to
 
 \normalsize
 
-~~~~ {.plantuml .title=PlantUML Example 2 .label=fig:plantuml-example-2}
+~~~~ {.plantuml .scale=20% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
 @startuml
 
 skinparam monochrome true
@@ -524,7 +536,7 @@ The following example produces Figure \ref{"fig:rdfdot-diagram"} on page \pagere
 
 \normalsize
 
-~~~~~ {.rdfdot .scale=65% .title=rdfdot Diagram .label="fig:rdfdot-diagram"}
+~~~~~ {.rdfdot .scale=150% .title=rdfdot Diagram .label="fig:rdfdot-diagram"}
 
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @base <http://example.com/> .
@@ -561,7 +573,7 @@ neato                   N/A
 
 yUML                    `.type=`                   any of `[` `class`, `activity`, `usecase` `]`
 
-                        `.style=`                  any of `[` `scruffy`, `boring`, `plain` `]`
+                        `.style=`                  any of `[` `scruffy`, `nofunky`, `plain` `]`
 
                         `.direction=`              any of `[` `LR`, `RL`, `TD`, `]`
 
@@ -617,34 +629,3 @@ Table: List of options
 
 
 ------------------------------------------------------------------------------
-
-
-<!--
- # Test 1
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-* Code
-
-* in lists should not be set:
-    ~~~~~ {.dot .Grankdir:LR}
-
-    digraph {
-      A -> B -> C;
-      A -> C;
-    }
-
-    ~~~~~
--->
-
-<!--
-op = OptionParser(usage="%prog [-i FILE] -o FILE", version="%prog 0.1")
-op.add_option("-i", "--in", dest="infile", help="read yuml from FILE instead of stdin", metavar="FILE", default="-")
-op.add_option("-o", "--out", dest="outfile", help="store output in FILE", metavar="FILE")
-op.add_option("-f", "--format", dest="fmt", help="use format FMT", metavar="FMT", default="png", choices=['png', 'pdf', 'jpg', 'svg'])
-op.add_option("-t", "--type", dest="type", help="draw a TYPE diagram", metavar="TYPE", default="class", choices=['class', 'activity', 'usecase'])
-op.add_option("-s", "--style", dest="style", help="use style STY", metavar="STY", default="scruffy", choices=['scruffy', 'boring', 'plain'])
-op.add_option("--scale", dest="scale", help="scale output to percentage", metavar="PERCENT", type="int")
-op.add_option("--dir", dest="dir", help="direction of the diagram LR RL TD", metavar="DIRECTION")
-op.add_option("-v", "--verbose", dest="v", help="print some debug info", action="store_true", default=False)
- -->

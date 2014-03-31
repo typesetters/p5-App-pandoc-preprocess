@@ -13,14 +13,27 @@ use FindBin;
 
 use lib "$FindBin::Bin/../lib";
 
-use Data::Printer;
-# use Smart::Comments;
+# use Moo;
+# use Data::Printer;
+use Smart::Comments;
+
+no autovivification;
 
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
+
+# my $rx = {
+#   begin => {
+#     code => qr/^[`~]{3,}/,
+#     ppp => qr/\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml|plantuml)(?<attributes>.*)\}.*/
+#   },
+#   end => {
+#     
+#   }
+# }
 
 BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
 
@@ -42,51 +55,88 @@ SUBS: {
     open $outfile, '>', "tmp/image-$fileno.$format"
   }
 
+  sub render {
+    my ($format, $fileno, %attrs) = @_;
+    my $cmd = '';
+    
+    $format =~ /^ditaa$/ and 
+      $cmd = "ditaa"
+           . " @{[exists $attrs{'rounded-corners'} ? '--round-corners ' : ' ']}"
+           . " @{[exists $attrs{'no-shadows'}      ? '--no-shadows '    : ' ']}"
+           . " @{[exists $attrs{'no-separation'}   ? '--no-separation ' : ' ']}"
+           . " @{[exists $attrs{'no-antialias'}    ? '--no-antialias '  : ' ']}"
+           . " tmp/image-$fileno.$format tmp/image-$fileno.png"
+           . " 2>&1 >>tmp/ditaa.log";
+
+    $format =~ /^rdfdot$/ and
+      $cmd = "rdfdot"
+           . " -ttl"
+           . " tmp/image-$fileno.$format tmp/image-$fileno.svg"
+           . " 2>&1 >>tmp/rdfdot.log";
+
+    $format =~ /^dot$/ and 
+      $cmd = "dot"
+           . " -Tsvg"
+           . " -o tmp/image-$fileno.svg tmp/image-$fileno.$format"
+           . " 2>&1 >>tmp/dot.log";
+
+    $format =~ /^neato$/ and 
+      $cmd = "neato"
+           . " -Tsvg "
+           . " -o tmp/image-$fileno.svg tmp/image-$fileno.$format "
+           . " 2>&1 >>tmp/neato.log";
+
+    $format =~ /^yuml$/ and 
+      $cmd = "yuml "
+           . " --format svg"
+           . " --type  @{[exists $attrs{type}      ? $attrs{type}     : 'class']}"
+           . " --style @{[exists $attrs{style}     ? $attrs{style}    : 'nofunky']}"
+           . " --dir   @{[exists $attrs{direction} ? $attrs{direction}: 'LR']}"
+           . " --in tmp/image-$fileno.$format --out tmp/image-$fileno.svg"
+           . " 2>&1 >>tmp/yuml.log";
+
+    $format =~ /^plantuml$/ and 
+      $cmd = "plantuml"
+           . " -tsvg "
+           . " -charset UTF-8"
+           . " tmp/image-$fileno.$format"
+           . " 2>&1 >>tmp/plantuml.log";
+
+    ### $cmd
+    system($cmd);
+    
+  }
+  sub scale {
+    my ($format, $fileno, %attrs) = @_;
+    my $cmd = '';
+
+    # TODO: These two formats should get svg support
+    if ($format =~ /^(ditaa)$/) {
+      $cmd = "mogrify"
+           . " -scale @{[exists $attrs{scale} ? $attrs{scale} : '100%']}"
+           . " tmp/image-$fileno.png"
+           . " 2>&1 >>tmp/mogrify.log";
+    } else {
+      my $scale = exists $attrs{scale} ? do { $_ = $attrs{scale}; s/%//; $_/100 }: 1.0;
+      $cmd = "rsvg-convert"
+           . " --zoom $scale"
+           . " --format png"
+           . " --output tmp/image-$fileno.png"
+           . " tmp/image-$fileno.svg"
+           . " 2>&1 >>tmp/plantuml.log";
+    };
+    ### $cmd
+    system($cmd);        
+  }
+
   sub end_ppp {
     close $outfile;
 
     my %attrs = map { /(.+?)=(["']?.+["']?)/ ? ($1 => $2) : ($_ => 1) } split /\s+\./, $attributes{$fileno.$format};
     if( my $child = fork == 0 ) {
        push @children, $child;
-       $format =~ /^ditaa$/ and do {
-         my $cmd =
-          "ditaa " .
-          (exists $attrs{"rounded-corners"} ? '--round-corners ' : ' ') .
-          (exists $attrs{"no-shadows"}      ? '--no-shadows '    : ' ') .
-          (exists $attrs{"no-separation"}   ? '--no-separation ' : ' ') .
-          (exists $attrs{"no-antialias"}    ? '--no-antialias '  : ' ') .
-          " tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/ditaa.log"
-        ;
-        system($cmd);
-        system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
-       $format =~ /^rdfdot$/ and do {
-         system("rdfdot -ttl tmp/image-$fileno.$format tmp/image-$fileno.png 2>&1 >>tmp/rdfdot.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
-       $format =~ /^dot$/ and do {
-         system("dot -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/dot.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
-       $format =~ /^neato$/ and do {
-         system("neato -Tpng -o tmp/image-$fileno.png tmp/image-$fileno.$format 2>&1 >>tmp/neato.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
-       $format =~ /^yuml$/ and do {
-         my $cmd =
-           "yuml " .
-           (exists $attrs{"type"}       ? "--type  @{[$attrs{type}      ]} ": '--type=class ') .
-           (exists $attrs{"style"}      ? "--style @{[$attrs{style}     ]} ": '--style=boring ') .
-           (exists $attrs{"direction"}  ? "--dir   @{[$attrs{direction} ]} ": '--dir=LR ') .
-           " --in tmp/image-$fileno.$format --out tmp/image-$fileno.png 2>&1 >>tmp/yuml.log"
-         ;
-         system($cmd);
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
-       $format =~ /^plantuml$/ and do {
-         system("plantuml -tpng -charset UTF-8 tmp/image-$fileno.$format 2>&1 >>tmp/plantuml.log");
-         system("mogrify -scale $attrs{scale} tmp/image-$fileno.png 2>&1 >>tmp/mogrify.log") if exists $attrs{scale};
-       };
+       render($format, $fileno, %attrs);
+       scale($format, $fileno, %attrs);
        exit 0;
     }
 
