@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/env perl -s
 
 package main;
 
@@ -8,14 +8,24 @@ package main;
 use v5.14;
 use strict;
 use warnings;
+use File::Spec;
 use File::Temp 'tempdir';
+use File::Path 'make_path';
+use Smart::Comments '####';
+
+# These can be set like: `ppp -tmp=tmpdir -log=logdir`
+our $tmp;
+our $log;
+
+create_directories($tmp, $log);
 
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
-state $tmpdir = tempdir( CLEANUP => 0 );
+state $tmpdir = tempdir('ppp-render-XXXXX', CLEANUP => 0, $tmp ? (DIR => $tmp) : File::Spec->tmpdir);
+state $logdir = tempdir('ppp-log-XXXXX'   , CLEANUP => 0, $log ? (DIR => $log) : File::Spec->tmpdir);
 
 MAIN: {
   while(<>) {
@@ -46,25 +56,25 @@ SUBS: {
            . " @{[exists $attrs{'no-separation'}   ? '--no-separation ' : ' ']}"
            . " @{[exists $attrs{'no-antialias'}    ? '--no-antialias '  : ' ']}"
            . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.png"
-           . " 2>&1 >>$tmpdir/ditaa.log";
+           . " 2>&1 >>$logdir/ditaa.log";
 
     $format =~ /^rdfdot$/ and
       $cmd = "rdfdot"
            . " -ttl"
            . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.svg"
-           . " 2>&1 >>$tmpdir/rdfdot.log";
+           . " 2>&1 >>$logdir/rdfdot.log";
 
     $format =~ /^dot$/ and 
       $cmd = "dot"
            . " -Tsvg"
            . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format"
-           . " 2>&1 >>$tmpdir/dot.log";
+           . " 2>&1 >>$logdir/dot.log";
 
     $format =~ /^neato$/ and 
       $cmd = "neato"
            . " -Tsvg "
            . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format "
-           . " 2>&1 >>$tmpdir/neato.log";
+           . " 2>&1 >>$logdir/neato.log";
 
     $format =~ /^yuml$/ and 
       $cmd = "yuml "
@@ -73,14 +83,14 @@ SUBS: {
            . " --style @{[exists $attrs{style}     ? $attrs{style}    : 'nofunky']}"
            . " --dir   @{[exists $attrs{direction} ? $attrs{direction}: 'LR']}"
            . " --in $tmpdir/image-$fileno.$format --out $tmpdir/image-$fileno.svg"
-           . " 2>&1 >>$tmpdir/yuml.log";
+           . " 2>&1 >>$logdir/yuml.log";
 
     $format =~ /^plantuml$/ and 
       $cmd = "plantuml"
            . " -tsvg "
            . " -charset UTF-8"
            . " $tmpdir/image-$fileno.$format"
-           . " 2>&1 >>$tmpdir/plantuml.log";
+           . " 2>&1 >>$logdir/plantuml.log";
 
     ### $cmd
     system($cmd);
@@ -95,7 +105,7 @@ SUBS: {
       $cmd = "mogrify"
            . " -scale @{[exists $attrs{scale} ? $attrs{scale} : '100%']}"
            . " $tmpdir/image-$fileno.png"
-           . " 2>&1 >>$tmpdir/mogrify.log";
+           . " 2>&1 >>$logdir/mogrify.log";
     } else {
       my $scale = exists $attrs{scale} ? do { $_ = $attrs{scale}; s/%//; $_/100 }: 1.0;
       $cmd = "rsvg-convert"
@@ -103,7 +113,7 @@ SUBS: {
            . " --format png"
            . " --output $tmpdir/image-$fileno.png"
            . " $tmpdir/image-$fileno.svg"
-           . " 2>&1 >>$tmpdir/plantuml.log";
+           . " 2>&1 >>$logdir/plantuml.log";
     };
     ### $cmd
     system($cmd);        
@@ -129,6 +139,16 @@ SUBS: {
     ;
     say STDOUT $format;
     $format = '';
+  }
+
+  sub create_directories {
+    for (@_) {
+      if (defined $_) {
+        unless (-d $_) {
+          make_path $_ or die "Failed to create path: $_";
+        }
+      }
+    }
   }
 }
 
