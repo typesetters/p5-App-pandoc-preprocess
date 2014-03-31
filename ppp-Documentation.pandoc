@@ -78,10 +78,11 @@ Using ditaa, the following markup will produce Figure \ref{fig:pipeline-overview
 
 \scriptsize
 
-    ~~~~~ {.ditaa .rounded-corners .no-shadows
-           .scale=90% .title="The ppp and pandoc pipeline"
-           .label=fig:pipeline-overview  .no-antialias .no-separation
-          } # Caution! These lines actually would have to be on *one* line only!
+    ~~~~~ {.ditaa .rounded-corners .no-shadows .scale=90%
+           .title="The ppp and pandoc pipeline"
+           .label=fig:pipeline-overview 
+           .no-antialias .no-separation}
+    # Caution! These lines actually would have to be on *one* line only!
     +-----------------+       +--------+           +--------------------+
     | markdown source |------>| ppp    |------*--->| pröcessed markdown |
     +-----------------+       +--------+      |    +--------------------+
@@ -96,7 +97,7 @@ Using ditaa, the following markup will produce Figure \ref{fig:pipeline-overview
 \normalsize
 
 
-~~~~~ {.ditaa .rounded-corners .no-shadows .scale=90% .title="The ppp and pandoc pipeline" .label=fig:pipeline-overview  .no-antialias .no-separation}
+~~~~~ {.ditaa .rounded-corners .no-shadows .scale=90% .title="The ppp and pandoc pipeline" .label=fig:pipeline-overview-x  .no-antialias .no-separation}
 +-----------------+       +--------+           +--------------------+
 | markdown source |------>| ppp    |------*--->| pröcessed markdown |
 +-----------------+       +--------+      |    +--------------------+
@@ -108,7 +109,7 @@ Using ditaa, the following markup will produce Figure \ref{fig:pipeline-overview
                     +------------------+
 ~~~~~
 
-~~~~~ {.ditaa .rounded-corners .no-shadows .title="The ppp and pandoc pipeline" .label=fig:pipeline-overview  .no-antialias .no-separation}
+~~~~~ {.ditaa .rounded-corners .no-shadows .title="The ppp and pandoc pipeline" .label=fig:pipeline-overview-y  .no-antialias .no-separation}
 +-----------------+       +--------+           +--------------------+
 | markdown source |------>| ppp    |------*--->| pröcessed markdown |
 +-----------------+       +--------+      |    +--------------------+
@@ -175,7 +176,6 @@ With `dot` as the *renderer*, the following markup produces the figure as seen i
     ~~~~~ {.dot .scale=50% .title=dot Finite State Automaton .label=fig:dot-fsa}
     digraph finite_state_machine {
       rankdir=LR;
-      size="8,5"
       node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
       node [shape = circle];
       LR_0 -> LR_2 [ label = "SS(B)" ];
@@ -200,7 +200,6 @@ With `dot` as the *renderer*, the following markup produces the figure as seen i
 ~~~~~ {.dot .scale=50% .title=dot Finite State Automaton .label=fig:dot-fsa}
 digraph finite_state_machine {
   rankdir=LR;
-  //size="8,5"
   node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
   node [shape = circle];
   LR_0 -> LR_2 [ label = "SS(B)" ];
@@ -241,7 +240,7 @@ The following example produces Figure \ref{fig:neato-diagram}.
 
 \scriptsize
 
-    ~~~~~ {.neato .title=neato diagram .label=fig:neato-diagram}
+    ~~~~~ {.neato .scale=80% .title=neato diagram .label=fig:neato-diagram}
     graph G {
       n0 -- n1 -- n2 -- n3 -- n0;
     }
@@ -249,7 +248,7 @@ The following example produces Figure \ref{fig:neato-diagram}.
 
 \normalsize
 
-~~~~~ {.neato .title=neato diagram .label=fig:neato-diagram}
+~~~~~ {.neato .scale=80% .title=neato diagram .label=fig:neato-diagram}
 graph G {
   n0 -- n1 -- n2 -- n3 -- n0;
 }
@@ -285,8 +284,7 @@ With *yUML* as the renderer, setting `.type=class` and using the style `.style=n
 
 \scriptsize
 
-    ~~~~ {.yuml .style=nofunky .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
-
+    ~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=100% .title=yUML class diagram .label=fig:yuml-class-diagram}
     [Customer] +1 ->        *[Order]
     [Order]   ++1 -items>   *[LineItem]
     [Order]       -0..1>     [PaymentMethod]
@@ -294,7 +292,7 @@ With *yUML* as the renderer, setting `.type=class` and using the style `.style=n
 
 \normalsize
 
-~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=44% .title=yUML class diagram .label=fig:yuml-class-diagram}
+~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=100% .title=yUML class diagram .label=fig:yuml-class-diagram}
 [Customer] +1 ->        *[Order]
 [Order]   ++1 -items>   *[LineItem]
 [Order]  -0..1>     [PaymentMethod]
@@ -317,7 +315,7 @@ With `scruffy` style and `.type=usecase`, the following example produces Figure 
 
 \normalsize
 
-~~~~ {.yuml .style=scruffy .type=usecase .scale=44% .title=yUML usecase diagram .label=fig:yuml-usecase-diagram}
+~~~~ {.yuml .style=scruffy .type=usecase .title=yUML usecase diagram .label=fig:yuml-usecase-diagram}
 // Cool Use Case Diagram
 [Customer]-(Make Cup of Tea)
 (Make Cup of Tea)<(Add Milk)
@@ -342,7 +340,6 @@ Lastly, using `.type=activity` and `.style=plain` the following example produces
 ~~~~ {.yuml .style=plain .type=activity .title=yUML activity Diagram .label=fig:yuml-activity-diagram}
 (start)->|a|,|a|->(Make Coffee)->|b|,|a|->(Make Breakfast)->|b|,|b|-><c>[want more coffee]->(Make Coffee),<c>[satisfied]->(end)
 ~~~~
-
 
 
 <!-- ~~~~ {.yuml .style=nofunky .type=class }
@@ -443,7 +440,7 @@ If the colors don't match your taste exactly, add `skinparam monochrome true` to
 
 \scriptsize
 
-    ~~~~ {.plantuml}
+    ~~~~ {.plantuml .scale=120% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
     @startuml
 
     skinparam monochrome true
@@ -475,7 +472,7 @@ If the colors don't match your taste exactly, add `skinparam monochrome true` to
 
 \normalsize
 
-~~~~ {.plantuml .scale=20% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
+~~~~ {.plantuml .scale=120% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
 @startuml
 
 skinparam monochrome true
@@ -526,8 +523,7 @@ The following example produces Figure \ref{"fig:rdfdot-diagram"} on page \pagere
 
 \scriptsize
 
-    ~~~~~ {.rdfdot .scale=65% .title=rdfdot Diagram .label="fig:rdfdot-diagram"}
-
+    ~~~~~ {.rdfdot .scale=150% .title=rdfdot Diagram .label="fig:rdfdot-diagram"}
     @prefix foaf: <http://xmlns.com/foaf/0.1/> .
     @base <http://example.com/> .
     <alice> foaf:name "Alice" ;
@@ -552,7 +548,7 @@ The following example produces Figure \ref{"fig:rdfdot-diagram"} on page \pagere
 ------------------------------------------------------------------------
  Renderer               Option                    possible values
 ----------            ------------              --------------------
-*General*               `.scale`                  `1%`--`99%`
+*General*               `.scale`                  e.g. `120%`
 
                         `.label`                  `fig:my-figure`
 

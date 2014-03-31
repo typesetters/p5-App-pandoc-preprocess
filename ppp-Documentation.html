@@ -69,10 +69,11 @@ Explanation of the gpp feature ...
 <h2 id="ditaa-examples"><span class="header-section-number">3.2</span> ditaa Examples</h2>
 <p>Using ditaa, the following markup will produce Figure .</p>
 <p></p>
-<pre><code>~~~~~ {.ditaa .rounded-corners .no-shadows
-       .scale=90% .title=&quot;The ppp and pandoc pipeline&quot;
-       .label=fig:pipeline-overview  .no-antialias .no-separation
-      } # Caution! These lines actually would have to be on *one* line only!
+<pre><code>~~~~~ {.ditaa .rounded-corners .no-shadows .scale=90%
+       .title=&quot;The ppp and pandoc pipeline&quot;
+       .label=fig:pipeline-overview 
+       .no-antialias .no-separation}
+# Caution! These lines actually would have to be on *one* line only!
 +-----------------+       +--------+           +--------------------+
 | markdown source |------&gt;| ppp    |------*---&gt;| pröcessed markdown |
 +-----------------+       +--------+      |    +--------------------+
@@ -121,7 +122,6 @@ Explanation of the gpp feature ...
 <pre><code>~~~~~ {.dot .scale=50% .title=dot Finite State Automaton .label=fig:dot-fsa}
 digraph finite_state_machine {
   rankdir=LR;
-  size=&quot;8,5&quot;
   node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
   node [shape = circle];
   LR_0 -&gt; LR_2 [ label = &quot;SS(B)&quot; ];
@@ -155,7 +155,7 @@ digraph finite_state_machine {
 <h2 id="neato-examples"><span class="header-section-number">5.2</span> neato Examples</h2>
 <p>The following example produces Figure .</p>
 <p></p>
-<pre><code>~~~~~ {.neato .title=neato diagram .label=fig:neato-diagram}
+<pre><code>~~~~~ {.neato .scale=80% .title=neato diagram .label=fig:neato-diagram}
 graph G {
   n0 -- n1 -- n2 -- n3 -- n0;
 }
@@ -172,7 +172,7 @@ graph G {
 <p>Options specific to yUML can be:</p>
 <ul>
 <li><code>.type=</code>: any of <code>[</code> <code>class</code>, <code>activity</code>, <code>usecase</code> <code>]</code></li>
-<li><code>.style=</code>: any of <code>[</code> <code>scruffy</code>, <code>boring</code>, <code>plain</code> <code>]</code></li>
+<li><code>.style=</code>: any of <code>[</code> <code>scruffy</code>, <code>nofunky</code>, <code>plain</code> <code>]</code></li>
 <li><code>.direction=</code>: any of <code>[</code> <code>LR</code>, <code>RL</code>, <code>TD</code>, <code>]</code></li>
 </ul>
 <!-- * `.format=`: `png`, `pdf`, `jpg`, `svg` -->
@@ -180,10 +180,9 @@ graph G {
 
 <h2 id="yuml-examples"><span class="header-section-number">6.2</span> yUML Examples</h2>
 <h3 id="yuml-class-diagrams"><span class="header-section-number">6.2.1</span> yUML Class diagrams</h3>
-<p>With <em>yUML</em> as the renderer, setting <code>.type=class</code> and using the style <code>.style=boring</code>, the following markup produces Figure .</p>
+<p>With <em>yUML</em> as the renderer, setting <code>.type=class</code> and using the style <code>.style=nofunky</code>, the following markup produces Figure .</p>
 <p></p>
-<pre><code>~~~~ {.yuml .style=boring .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
-
+<pre><code>~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=100% .title=yUML class diagram .label=fig:yuml-class-diagram}
 [Customer] +1 -&gt;        *[Order]
 [Order]   ++1 -items&gt;   *[LineItem]
 [Order]       -0..1&gt;     [PaymentMethod]
@@ -217,7 +216,7 @@ graph G {
 <div class="figure">
 <img src="tmp/image-8.png" alt="yUML activity Diagram" /><p class="caption">yUML activity Diagram</p>
 </div>
-<!-- ~~~~ {.yuml .style=boring .type=class }
+<!-- ~~~~ {.yuml .style=nofunky .type=class }
 [               Company
              <<singleton>>
  ===================================
@@ -277,7 +276,7 @@ state Configuring {
 <h3 id="plantuml-example-2"><span class="header-section-number">7.2.2</span> plantuml Example 2</h3>
 <p>If the colors don’t match your taste exactly, add <code>skinparam monochrome true</code> to retrieve Figure .</p>
 <p></p>
-<pre><code>~~~~ {.plantuml}
+<pre><code>~~~~ {.plantuml .scale=120% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
 @startuml
 
 skinparam monochrome true
@@ -321,8 +320,7 @@ deactivate A
 <h2 id="rdfdot-examples"><span class="header-section-number">8.2</span> rdfdot Examples</h2>
 <p>The following example produces Figure  on page .</p>
 <p></p>
-<pre><code>~~~~~ {.rdfdot .scale=65% .title=rdfdot Diagram .label=&quot;fig:rdfdot-diagram&quot;}
-
+<pre><code>~~~~~ {.rdfdot .scale=150% .title=rdfdot Diagram .label=&quot;fig:rdfdot-diagram&quot;}
 @prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 @base &lt;http://example.com/&gt; .
 &lt;alice&gt; foaf:name &quot;Alice&quot; ;
@@ -400,7 +398,7 @@ deactivate A
 <tr class="odd">
 <td align="center"></td>
 <td align="center"><code>.style=</code></td>
-<td align="center">any of <code>[</code> <code>scruffy</code>, <code>boring</code>, <code>plain</code> <code>]</code></td>
+<td align="center">any of <code>[</code> <code>scruffy</code>, <code>nofunky</code>, <code>plain</code> <code>]</code></td>
 </tr>
 <tr class="even">
 <td align="center"></td>
@@ -478,34 +476,5 @@ deactivate A
 </ul>
 <p></p>
 <hr />
-<!--
- # Test 1
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-* Code
-
-* in lists should not be set:
-    ~~~~~ {.dot .Grankdir:LR}
-
-    digraph {
-      A -> B -> C;
-      A -> C;
-    }
-
-    ~~~~~
--->
-
-<!--
-op = OptionParser(usage="%prog [-i FILE] -o FILE", version="%prog 0.1")
-op.add_option("-i", "--in", dest="infile", help="read yuml from FILE instead of stdin", metavar="FILE", default="-")
-op.add_option("-o", "--out", dest="outfile", help="store output in FILE", metavar="FILE")
-op.add_option("-f", "--format", dest="fmt", help="use format FMT", metavar="FMT", default="png", choices=['png', 'pdf', 'jpg', 'svg'])
-op.add_option("-t", "--type", dest="type", help="draw a TYPE diagram", metavar="TYPE", default="class", choices=['class', 'activity', 'usecase'])
-op.add_option("-s", "--style", dest="style", help="use style STY", metavar="STY", default="scruffy", choices=['scruffy', 'boring', 'plain'])
-op.add_option("--scale", dest="scale", help="scale output to percentage", metavar="PERCENT", type="int")
-op.add_option("--dir", dest="dir", help="direction of the diagram LR RL TD", metavar="DIRECTION")
-op.add_option("-v", "--verbose", dest="v", help="print some debug info", action="store_true", default=False)
- -->
 </body>
 </html>
