@@ -5,3 +5,15 @@ image*
 tmp
 tmp2
 .DS_Store
+latex728.fls
+latex73238.fls
+ppp-Documentation.aux
+ppp-Documentation.dvi
+ppp-Documentation.fdb_latexmk
+ppp-Documentation.fls
+ppp-Documentation.latex
+ppp-Documentation.lof
+ppp-Documentation.log
+ppp-Documentation.out
+ppp-Documentation.tex
+ppp-Documentation.toc
