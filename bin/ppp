@@ -8,14 +8,14 @@ package main;
 use v5.14;
 use strict;
 use warnings;
+use File::Temp 'tempdir';
 
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
-
-BEGIN { die "No directory tmp/ available! Please create it" unless -d 'tmp/' }
+state $tmpdir = tempdir( CLEANUP => 0 );
 
 MAIN: {
   while(<>) {
@@ -32,7 +32,7 @@ SUBS: {
     $fileno++;
     $format = $+{format};
     $attributes{$fileno.$format} = $+{attributes};
-    open $outfile, '>', "tmp/image-$fileno.$format"
+    open $outfile, '>', "$tmpdir/image-$fileno.$format"
   }
 
   sub render {
@@ -45,26 +45,26 @@ SUBS: {
            . " @{[exists $attrs{'no-shadows'}      ? '--no-shadows '    : ' ']}"
            . " @{[exists $attrs{'no-separation'}   ? '--no-separation ' : ' ']}"
            . " @{[exists $attrs{'no-antialias'}    ? '--no-antialias '  : ' ']}"
-           . " tmp/image-$fileno.$format tmp/image-$fileno.png"
-           . " 2>&1 >>tmp/ditaa.log";
+           . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.png"
+           . " 2>&1 >>$tmpdir/ditaa.log";
 
     $format =~ /^rdfdot$/ and
       $cmd = "rdfdot"
            . " -ttl"
-           . " tmp/image-$fileno.$format tmp/image-$fileno.svg"
-           . " 2>&1 >>tmp/rdfdot.log";
+           . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.svg"
+           . " 2>&1 >>$tmpdir/rdfdot.log";
 
     $format =~ /^dot$/ and 
       $cmd = "dot"
            . " -Tsvg"
-           . " -o tmp/image-$fileno.svg tmp/image-$fileno.$format"
-           . " 2>&1 >>tmp/dot.log";
+           . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format"
+           . " 2>&1 >>$tmpdir/dot.log";
 
     $format =~ /^neato$/ and 
       $cmd = "neato"
            . " -Tsvg "
-           . " -o tmp/image-$fileno.svg tmp/image-$fileno.$format "
-           . " 2>&1 >>tmp/neato.log";
+           . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format "
+           . " 2>&1 >>$tmpdir/neato.log";
 
     $format =~ /^yuml$/ and 
       $cmd = "yuml "
@@ -72,15 +72,15 @@ SUBS: {
            . " --type  @{[exists $attrs{type}      ? $attrs{type}     : 'class']}"
            . " --style @{[exists $attrs{style}     ? $attrs{style}    : 'nofunky']}"
            . " --dir   @{[exists $attrs{direction} ? $attrs{direction}: 'LR']}"
-           . " --in tmp/image-$fileno.$format --out tmp/image-$fileno.svg"
-           . " 2>&1 >>tmp/yuml.log";
+           . " --in $tmpdir/image-$fileno.$format --out $tmpdir/image-$fileno.svg"
+           . " 2>&1 >>$tmpdir/yuml.log";
 
     $format =~ /^plantuml$/ and 
       $cmd = "plantuml"
            . " -tsvg "
            . " -charset UTF-8"
-           . " tmp/image-$fileno.$format"
-           . " 2>&1 >>tmp/plantuml.log";
+           . " $tmpdir/image-$fileno.$format"
+           . " 2>&1 >>$tmpdir/plantuml.log";
 
     ### $cmd
     system($cmd);
@@ -94,16 +94,16 @@ SUBS: {
     if ($format =~ /^(ditaa)$/) {
       $cmd = "mogrify"
            . " -scale @{[exists $attrs{scale} ? $attrs{scale} : '100%']}"
-           . " tmp/image-$fileno.png"
-           . " 2>&1 >>tmp/mogrify.log";
+           . " $tmpdir/image-$fileno.png"
+           . " 2>&1 >>$tmpdir/mogrify.log";
     } else {
       my $scale = exists $attrs{scale} ? do { $_ = $attrs{scale}; s/%//; $_/100 }: 1.0;
       $cmd = "rsvg-convert"
            . " --zoom $scale"
            . " --format png"
-           . " --output tmp/image-$fileno.png"
-           . " tmp/image-$fileno.svg"
-           . " 2>&1 >>tmp/plantuml.log";
+           . " --output $tmpdir/image-$fileno.png"
+           . " $tmpdir/image-$fileno.svg"
+           . " 2>&1 >>$tmpdir/plantuml.log";
     };
     ### $cmd
     system($cmd);        
@@ -124,7 +124,7 @@ SUBS: {
       "![" . (exists $attrs{title} ? $attrs{title} : '' )
            . (exists $attrs{label} ? "\\label{$attrs{label}}" : '' ).
       "]"  .
-      "(tmp/image-$fileno.png)" .
+      "($tmpdir/image-$fileno.png)" .
       (exists $attrs{inline} ? '\\ ' : '')
     ;
     say STDOUT $format;
