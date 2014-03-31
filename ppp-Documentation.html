@@ -1,36 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Daniel Bruder" />
+  <title>ppp Documentation</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title"><code>ppp</code> Documentation</h1>
+<h2 class="author">Daniel Bruder</h2>
+<h3 class="date">Version 0.7.2</h3>
+</div>
 <!-- <#ifdef HANDOUT>
 Explanation of the gpp feature ...
 <#endif>
  -->
 
 <p></p>
-<h1 id="abstract">Abstract</h1>
-<p><em><code>ppp</code> allows you to use pandoc in new ways by rendering ASCII-markup to beautiful pictures right from within pandoc's verbatim environments.</em></p>
+<h1 id="abstract"><span class="header-section-number">1</span> Abstract</h1>
+<p><em><code>ppp</code> allows you to use pandoc in new ways by rendering ASCII-markup to beautiful pictures right from within pandoc’s verbatim environments.</em></p>
 <p><em>See below for illustrative examples and detailed usage instructions.</em></p>
 <p><em>Bonus on top: Leaving out <code>ppp</code> form the typesetting pipeline will still render your document and the verbatims with the ASCII-markup will still stay readable!</em></p>
 <hr />
 <p></p>
-<h1 id="general-usage">General usage</h1>
-<p>In each case, you will use pandoc's verbatim environment, set the rendering engine and additional options:</p>
+<h1 id="general-usage"><span class="header-section-number">2</span> General usage</h1>
+<p>In each case, you will use pandoc’s verbatim environment, set the rendering engine and additional options:</p>
 <pre><code>~~~~~ {.renderer .option1 .option2=value2}
  --- RENDERER-SPECIFIC MARKUP GOES HERE ---
 ~~~~~</code></pre>
-<h2 id="general-renderers">General Renderers</h2>
+<h2 id="general-renderers"><span class="header-section-number">2.1</span> General Renderers</h2>
 <p>The renderers available to <code>ppp</code> are:</p>
 <ul>
 <li>ditaa</li>
 <li>yuml diagrams:
 <ul>
-<li>class diagramas (cf. Figure )</li>
-<li>usecase diagramas (cf. Figure )</li>
-<li>activity diagramas (cf. Figure )</li>
+<li>class diagramas (cf. Figure )</li>
+<li>usecase diagramas (cf. Figure )</li>
+<li>activity diagramas (cf. Figure )</li>
 </ul></li>
 <li>dot</li>
 <li>neato</li>
 <li>rdfdot</li>
 <li>plantuml</li>
 </ul>
-<h2 id="general-options">General Options</h2>
+<h2 id="general-options"><span class="header-section-number">2.2</span> General Options</h2>
 <p>This is a list of the general options, compatible with any type of renderer:</p>
 <ul>
 <li><code>.scale=90%</code></li>
@@ -39,10 +55,10 @@ Explanation of the gpp feature ...
 </ul>
 <hr />
 <p></p>
-<h1 id="ditaa-diagrams">ditaa Diagrams</h1>
+<h1 id="ditaa-diagrams"><span class="header-section-number">3</span> ditaa Diagrams</h1>
 <p>In order to generate <code>ditaa</code>-diagrams, ditaa needs to be installed.</p>
 <p>For an exhaustive list of options and possibilities, please check the <a href="http://ditaa.sourceforge.net/">ditaa homepage</a>.</p>
-<h2 id="ditaa-options">ditaa Options</h2>
+<h2 id="ditaa-options"><span class="header-section-number">3.1</span> ditaa Options</h2>
 <p>Apart from the <a href="#general-options">General Options</a>, the possible options specific to ditaa are:</p>
 <ul>
 <li><code>.rounded-corners</code></li>
@@ -50,13 +66,14 @@ Explanation of the gpp feature ...
 <li><code>.no-antialias</code></li>
 <li><code>.no-separation</code></li>
 </ul>
-<h2 id="ditaa-examples">ditaa Examples</h2>
+<h2 id="ditaa-examples"><span class="header-section-number">3.2</span> ditaa Examples</h2>
 <p>Using ditaa, the following markup will produce Figure .</p>
 <p></p>
-<pre><code>~~~~~ {.ditaa .rounded-corners .no-shadows
-       .scale=90% .title=&quot;The ppp and pandoc pipeline&quot;
-       .label=fig:pipeline-overview  .no-antialias .no-separation
-      } # Caution! These lines actually would have to be on *one* line only!
+<pre><code>~~~~~ {.ditaa .rounded-corners .no-shadows .scale=90%
+       .title=&quot;The ppp and pandoc pipeline&quot;
+       .label=fig:pipeline-overview 
+       .no-antialias .no-separation}
+# Caution! These lines actually would have to be on *one* line only!
 +-----------------+       +--------+           +--------------------+
 | markdown source |------&gt;| ppp    |------*---&gt;| pröcessed markdown |
 +-----------------+       +--------+      |    +--------------------+
@@ -69,7 +86,10 @@ Explanation of the gpp feature ...
 ~~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-1.png" alt="&quot;The ppp and pandoc pipeline&quot;" /><p class="caption">&quot;The ppp and pandoc pipeline&quot;</p>
+<img src="tmp/image-1.png" alt="The ppp and pandoc pipeline" /><p class="caption">“The ppp and pandoc pipeline”</p>
+</div>
+<div class="figure">
+<img src="tmp/image-2.png" alt="The ppp and pandoc pipeline" /><p class="caption">“The ppp and pandoc pipeline”</p>
 </div>
 <p>As a contrast, turning off several options, ditaa will produce an output as in Figure :</p>
 <p></p>
@@ -86,23 +106,22 @@ Explanation of the gpp feature ...
 ~~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-2.png" alt="&quot;The ppp and pandoc pipeline #2&quot;" /><p class="caption">&quot;The ppp and pandoc pipeline #2&quot;</p>
+<img src="tmp/image-3.png" alt="The ppp and pandoc pipeline #2" /><p class="caption">“The ppp and pandoc pipeline #2”</p>
 </div>
 <hr />
 <p></p>
-<h1 id="dot-diagrams">dot Diagrams</h1>
-<p><code>dot</code> rendering is done through <a href="http://www.graphviz.org/">GraphViz</a>'s engine. Please cf. <a href="http://www.graphviz.org/Documentation.php">Graphviz's Documentation</a> for exact usage specifics on the usage of <code>dot</code>.</p>
-<h2 id="dot-options">dot Options</h2>
+<h1 id="dot-diagrams"><span class="header-section-number">4</span> dot Diagrams</h1>
+<p><code>dot</code> rendering is done through <a href="http://www.graphviz.org/">GraphViz</a>’s engine. Please cf. <a href="http://www.graphviz.org/Documentation.php">Graphviz’s Documentation</a> for exact usage specifics on the usage of <code>dot</code>.</p>
+<h2 id="dot-options"><span class="header-section-number">4.1</span> dot Options</h2>
 <ul>
 <li>currently none apart from the <a href="#general-options">General Options</a></li>
 </ul>
-<h2 id="dot-examples">dot Examples</h2>
+<h2 id="dot-examples"><span class="header-section-number">4.2</span> dot Examples</h2>
 <p>With <code>dot</code> as the <em>renderer</em>, the following markup produces the figure as seen in Figure .</p>
 <p></p>
 <pre><code>~~~~~ {.dot .scale=50% .title=dot Finite State Automaton .label=fig:dot-fsa}
 digraph finite_state_machine {
   rankdir=LR;
-  size=&quot;8,5&quot;
   node [shape = doublecircle]; LR_0 LR_3 LR_4 LR_8;
   node [shape = circle];
   LR_0 -&gt; LR_2 [ label = &quot;SS(B)&quot; ];
@@ -123,58 +142,57 @@ digraph finite_state_machine {
 ~~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-3.png" alt="dot Finite State Automaton" /><p class="caption">dot Finite State Automaton</p>
+<img src="tmp/image-4.png" alt="dot Finite State Automaton" /><p class="caption">dot Finite State Automaton</p>
 </div>
 <hr />
 <p></p>
-<h1 id="neato-diagrams">neato Diagrams</h1>
+<h1 id="neato-diagrams"><span class="header-section-number">5</span> neato Diagrams</h1>
 <p><code>neato</code> diagrams behave very similarly to <a href="#dot-diagrams">dot Diagrams</a>. Please cf <a href="#dot-diagrams">dot Diagrams</a> for more information</p>
-<h2 id="neato-options">neato Options</h2>
+<h2 id="neato-options"><span class="header-section-number">5.1</span> neato Options</h2>
 <ul>
 <li>same as <a href="#dot-options">dot Options</a></li>
 </ul>
-<h2 id="neato-examples">neato Examples</h2>
+<h2 id="neato-examples"><span class="header-section-number">5.2</span> neato Examples</h2>
 <p>The following example produces Figure .</p>
 <p></p>
-<pre><code>~~~~~ {.neato .scale=50% .title=neato diagram .label=fig:neato-diagram}
+<pre><code>~~~~~ {.neato .scale=80% .title=neato diagram .label=fig:neato-diagram}
 graph G {
   n0 -- n1 -- n2 -- n3 -- n0;
 }
 ~~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-4.png" alt="neato diagram" /><p class="caption">neato diagram</p>
+<img src="tmp/image-5.png" alt="neato diagram" /><p class="caption">neato diagram</p>
 </div>
 <hr />
 <p></p>
-<h1 id="yuml">yUML</h1>
+<h1 id="yuml"><span class="header-section-number">6</span> yUML</h1>
 <p>yUML needs a network connection and uses http://yuml.me as the rendering service.</p>
-<h2 id="yuml-options">yUML Options</h2>
+<h2 id="yuml-options"><span class="header-section-number">6.1</span> yUML Options</h2>
 <p>Options specific to yUML can be:</p>
 <ul>
 <li><code>.type=</code>: any of <code>[</code> <code>class</code>, <code>activity</code>, <code>usecase</code> <code>]</code></li>
-<li><code>.style=</code>: any of <code>[</code> <code>scruffy</code>, <code>boring</code>, <code>plain</code> <code>]</code></li>
+<li><code>.style=</code>: any of <code>[</code> <code>scruffy</code>, <code>nofunky</code>, <code>plain</code> <code>]</code></li>
 <li><code>.direction=</code>: any of <code>[</code> <code>LR</code>, <code>RL</code>, <code>TD</code>, <code>]</code></li>
 </ul>
 <!-- * `.format=`: `png`, `pdf`, `jpg`, `svg` -->
 <!-- * `.scale=`: `10%`-`200%` -->
 
-<h2 id="yuml-examples">yUML Examples</h2>
-<h3 id="yuml-class-diagrams">yUML Class diagrams</h3>
-<p>With <em>yUML</em> as the renderer, setting <code>.type=class</code> and using the style <code>.style=boring</code>, the following markup produces Figure .</p>
+<h2 id="yuml-examples"><span class="header-section-number">6.2</span> yUML Examples</h2>
+<h3 id="yuml-class-diagrams"><span class="header-section-number">6.2.1</span> yUML Class diagrams</h3>
+<p>With <em>yUML</em> as the renderer, setting <code>.type=class</code> and using the style <code>.style=nofunky</code>, the following markup produces Figure .</p>
 <p></p>
-<pre><code>~~~~ {.yuml .style=boring .type=class .direction=TD .title=yUML class diagram .label=fig:yuml-class-diagram}
-
+<pre><code>~~~~ {.yuml .style=nofunky .type=class .direction=LR .scale=100% .title=yUML class diagram .label=fig:yuml-class-diagram}
 [Customer] +1 -&gt;        *[Order]
 [Order]   ++1 -items&gt;   *[LineItem]
 [Order]       -0..1&gt;     [PaymentMethod]
 ~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-5.png" alt="yUML class diagram" /><p class="caption">yUML class diagram</p>
+<img src="tmp/image-6.png" alt="yUML class diagram" /><p class="caption">yUML class diagram</p>
 </div>
 <p></p>
-<h3 id="yuml-usecase-diagrams">yuml Usecase diagrams</h3>
+<h3 id="yuml-usecase-diagrams"><span class="header-section-number">6.2.2</span> yuml Usecase diagrams</h3>
 <p>With <code>scruffy</code> style and <code>.type=usecase</code>, the following example produces Figure .</p>
 <p></p>
 <pre><code>~~~~ {.yuml .style=scruffy .type=usecase .title=yUML usecase diagram .label=fig:yuml-usecase-diagram}
@@ -185,10 +203,10 @@ graph G {
 ~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-6.png" alt="yUML usecase diagram" /><p class="caption">yUML usecase diagram</p>
+<img src="tmp/image-7.png" alt="yUML usecase diagram" /><p class="caption">yUML usecase diagram</p>
 </div>
 <p></p>
-<h3 id="yuml-activity-diagrams">yuml Activity diagrams</h3>
+<h3 id="yuml-activity-diagrams"><span class="header-section-number">6.2.3</span> yuml Activity diagrams</h3>
 <p>Lastly, using <code>.type=activity</code> and <code>.style=plain</code> the following example produces Figure .</p>
 <p></p>
 <pre><code>~~~~ {.yuml .style=plain .type=activity .title=yUML activity Diagram .label=fig:yuml-activity-diagram}
@@ -196,9 +214,9 @@ graph G {
 ~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-7.png" alt="yUML activity Diagram" /><p class="caption">yUML activity Diagram</p>
+<img src="tmp/image-8.png" alt="yUML activity Diagram" /><p class="caption">yUML activity Diagram</p>
 </div>
-<!-- ~~~~ {.yuml .style=boring .type=class }
+<!-- ~~~~ {.yuml .style=nofunky .type=class }
 [               Company
              <<singleton>>
  ===================================
@@ -216,17 +234,17 @@ graph G {
 
 <hr />
 <p></p>
-<h1 id="plantuml">plantuml</h1>
-<p>plantuml -- based on graphviz --, has an extensive feature set</p>
-<h2 id="plantuml-options">plantuml Options</h2>
+<h1 id="plantuml"><span class="header-section-number">7</span> plantuml</h1>
+<p>plantuml – based on graphviz –, has an extensive feature set</p>
+<h2 id="plantuml-options"><span class="header-section-number">7.1</span> plantuml Options</h2>
 <ul>
 <li><em>General Options</em></li>
 </ul>
-<h2 id="plantuml-examples">plantuml Examples</h2>
-<h3 id="plantuml-example-1">plantuml Example 1</h3>
+<h2 id="plantuml-examples"><span class="header-section-number">7.2</span> plantuml Examples</h2>
+<h3 id="plantuml-example-1"><span class="header-section-number">7.2.1</span> plantuml Example 1</h3>
 <p>With <em>plantuml</em> as the renderer, the following markup produces Figure .</p>
 <p></p>
-<pre><code>~~~~ {.plantuml}
+<pre><code>~~~~ {.plantuml .scale=60% .title=PlantUML Example 1 .label=fig:plantuml-example-1}
 @startuml
 scale 350 width
 [*] --&gt; NotShooting
@@ -252,13 +270,13 @@ state Configuring {
 ~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-8.png" alt="PlantUML Example 1" /><p class="caption">PlantUML Example 1</p>
+<img src="tmp/image-9.png" alt="PlantUML Example 1" /><p class="caption">PlantUML Example 1</p>
 </div>
 <p></p>
-<h3 id="plantuml-example-2">plantuml Example 2</h3>
-<p>If the colors don't match your taste exactly, add <code>skinparam monochrome true</code> to retrieve Figure .</p>
+<h3 id="plantuml-example-2"><span class="header-section-number">7.2.2</span> plantuml Example 2</h3>
+<p>If the colors don’t match your taste exactly, add <code>skinparam monochrome true</code> to retrieve Figure .</p>
 <p></p>
-<pre><code>~~~~ {.plantuml}
+<pre><code>~~~~ {.plantuml .scale=120% .title=PlantUML Example 2 .label=fig:plantuml-example-2}
 @startuml
 
 skinparam monochrome true
@@ -289,21 +307,20 @@ deactivate A
 ~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-9.png" alt="PlantUML Example 2" /><p class="caption">PlantUML Example 2</p>
+<img src="tmp/image-10.png" alt="PlantUML Example 2" /><p class="caption">PlantUML Example 2</p>
 </div>
 <p></p>
 <hr />
 <p></p>
-<h1 id="rdfdot-diagrams">rdfdot Diagrams</h1>
-<h2 id="rdfdot-options">rdfdot Options</h2>
+<h1 id="rdfdot-diagrams"><span class="header-section-number">8</span> rdfdot Diagrams</h1>
+<h2 id="rdfdot-options"><span class="header-section-number">8.1</span> rdfdot Options</h2>
 <ul>
 <li>currently none apart from the <a href="#general-options">General Options</a></li>
 </ul>
-<h2 id="rdfdot-examples">rdfdot Examples</h2>
+<h2 id="rdfdot-examples"><span class="header-section-number">8.2</span> rdfdot Examples</h2>
 <p>The following example produces Figure  on page .</p>
 <p></p>
-<pre><code>~~~~~ {.rdfdot .scale=65% .title=rdfdot Diagram .label=&quot;fig:rdfdot-diagram&quot;}
-
+<pre><code>~~~~~ {.rdfdot .scale=150% .title=rdfdot Diagram .label=&quot;fig:rdfdot-diagram&quot;}
 @prefix foaf: &lt;http://xmlns.com/foaf/0.1/&gt; .
 @base &lt;http://example.com/&gt; .
 &lt;alice&gt; foaf:name &quot;Alice&quot; ;
@@ -311,10 +328,10 @@ deactivate A
 ~~~~~</code></pre>
 <p></p>
 <div class="figure">
-<img src="tmp/image-10.png" alt="rdfdot Diagram" /><p class="caption">rdfdot Diagram</p>
+<img src="tmp/image-11.png" alt="rdfdot Diagram" /><p class="caption">rdfdot Diagram</p>
 </div>
 <p></p>
-<h1 id="list-of-options">List of options</h1>
+<h1 id="list-of-options"><span class="header-section-number">9</span> List of options</h1>
 <table>
 <caption>List of options</caption>
 <col width="30%" />
@@ -331,7 +348,7 @@ deactivate A
 <tr class="odd">
 <td align="center"><em>General</em></td>
 <td align="center"><code>.scale</code></td>
-<td align="center"><code>1%</code>--<code>99%</code></td>
+<td align="center"><code>1%</code>–<code>99%</code></td>
 </tr>
 <tr class="even">
 <td align="center"></td>
@@ -381,7 +398,7 @@ deactivate A
 <tr class="odd">
 <td align="center"></td>
 <td align="center"><code>.style=</code></td>
-<td align="center">any of <code>[</code> <code>scruffy</code>, <code>boring</code>, <code>plain</code> <code>]</code></td>
+<td align="center">any of <code>[</code> <code>scruffy</code>, <code>nofunky</code>, <code>plain</code> <code>]</code></td>
 </tr>
 <tr class="even">
 <td align="center"></td>
@@ -396,7 +413,7 @@ deactivate A
 </tbody>
 </table>
 <p></p>
-<h1 id="list-of-homepages-and-documentation-to-renderers">List of homepages and documentation to renderers</h1>
+<h1 id="list-of-homepages-and-documentation-to-renderers"><span class="header-section-number">10</span> List of homepages and documentation to renderers</h1>
 <table>
 <caption>List of options</caption>
 <col width="15%" />
@@ -450,7 +467,7 @@ deactivate A
 </tr>
 </tbody>
 </table>
-<h1 id="credits-and-further-references">Credits and further references</h1>
+<h1 id="credits-and-further-references"><span class="header-section-number">11</span> Credits and further references</h1>
 <ul>
 <li><a href="http://www.asciiflow.com/#Draw">http://www.asciiflow.com/#Draw</a>: an excellent helper for all things diagram</li>
 <li><a href="http://randomdeterminism.wordpress.com/2012/06/01/how-i-stopped-worring-and-started-using-markdown-like-tex/">http://randomdeterminism.wordpress.com/2012/06/01/how-i-stopped-worring-and-started-using-markdown-like-tex/</a>: general introduction to another approach to typesetting and using <code>gpp</code></li>
@@ -459,34 +476,5 @@ deactivate A
 </ul>
 <p></p>
 <hr />
-<!--
- # Test 1
-
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-* Code
-
-* in lists should not be set:
-    ~~~~~ {.dot .Grankdir:LR}
-
-    digraph {
-      A -> B -> C;
-      A -> C;
-    }
-
-    ~~~~~
--->
-
-<!--
-op = OptionParser(usage="%prog [-i FILE] -o FILE", version="%prog 0.1")
-op.add_option("-i", "--in", dest="infile", help="read yuml from FILE instead of stdin", metavar="FILE", default="-")
-op.add_option("-o", "--out", dest="outfile", help="store output in FILE", metavar="FILE")
-op.add_option("-f", "--format", dest="fmt", help="use format FMT", metavar="FMT", default="png", choices=['png', 'pdf', 'jpg', 'svg'])
-op.add_option("-t", "--type", dest="type", help="draw a TYPE diagram", metavar="TYPE", default="class", choices=['class', 'activity', 'usecase'])
-op.add_option("-s", "--style", dest="style", help="use style STY", metavar="STY", default="scruffy", choices=['scruffy', 'boring', 'plain'])
-op.add_option("--scale", dest="scale", help="scale output to percentage", metavar="PERCENT", type="int")
-op.add_option("--dir", dest="dir", help="direction of the diagram LR RL TD", metavar="DIRECTION")
-op.add_option("-v", "--verbose", dest="v", help="print some debug info", action="store_true", default=False)
- -->
-
-
+</body>
+</html>
