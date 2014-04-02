@@ -48,8 +48,8 @@ SUBS: {
   sub render {
     my ($format, $fileno, %attrs) = @_;
     my $cmd = '';
-    
-    $format =~ /^ditaa$/ and 
+
+    $format =~ /^ditaa$/ and
       $cmd = "ditaa"
            . " @{[exists $attrs{'rounded-corners'} ? '--round-corners ' : ' ']}"
            . " @{[exists $attrs{'no-shadows'}      ? '--no-shadows '    : ' ']}"
@@ -64,19 +64,19 @@ SUBS: {
            . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.svg"
            . " 2>&1 >>$logdir/rdfdot.log";
 
-    $format =~ /^dot$/ and 
+    $format =~ /^dot$/ and
       $cmd = "dot"
            . " -Tsvg"
            . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format"
            . " 2>&1 >>$logdir/dot.log";
 
-    $format =~ /^neato$/ and 
+    $format =~ /^neato$/ and
       $cmd = "neato"
            . " -Tsvg "
            . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format "
            . " 2>&1 >>$logdir/neato.log";
 
-    $format =~ /^yuml$/ and 
+    $format =~ /^yuml$/ and
       $cmd = "yuml "
            . " --format svg"
            . " --type  @{[exists $attrs{type}      ? $attrs{type}     : 'class']}"
@@ -85,7 +85,7 @@ SUBS: {
            . " --in $tmpdir/image-$fileno.$format --out $tmpdir/image-$fileno.svg"
            . " 2>&1 >>$logdir/yuml.log";
 
-    $format =~ /^plantuml$/ and 
+    $format =~ /^plantuml$/ and
       $cmd = "plantuml"
            . " -tsvg "
            . " -charset UTF-8"
@@ -94,7 +94,7 @@ SUBS: {
 
     ### $cmd
     system($cmd);
-    
+
   }
   sub scale {
     my ($format, $fileno, %attrs) = @_;
@@ -116,7 +116,7 @@ SUBS: {
            . " 2>&1 >>$logdir/plantuml.log";
     };
     ### $cmd
-    system($cmd);        
+    system($cmd);
   }
 
   sub end_ppp {
