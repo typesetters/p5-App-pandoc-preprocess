@@ -12,10 +12,11 @@ See `ppp-Documentation.pandoc` for concrete usage examples and [cpan](https://me
 
 ## Prerequisites
 
-* dot/neato
-* rdfdot
-* ditaa
-* Image::Magick (for downscaling of large images)
+* [dot](http://www.graphviz.org/Documentation.php)/[neato](http://www.graphviz.org/pdf/neatoguide.pdf)
+* [rdfdot](RDF::Trine::Exporter::GraphViz)
+* [ditaa](http://ditaa.sourceforge.net/)
+* [Image::Magick](http://www.imagemagick.org/) (image manipulation)
+* [rsvg-convert](http://live.gnome.org/LibRsvg)
 * [yuml](https://github.com/wandernauta/yuml) (install as python module using `pip install https://github.com/wandernauta/yuml/zipball/master` or `easy_install https://github.com/wandernauta/yuml/zipball/master`)
 * [plantuml](http://plantuml.sourceforge.net/)
 
