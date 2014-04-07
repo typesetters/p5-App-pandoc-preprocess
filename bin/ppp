@@ -44,15 +44,18 @@ while (@ARGV) {
 
 create_directories($tmp, $log);
 
+state $verbose = 1;
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
-state $tmpdir = tempdir('ppp-render-XXXXX', CLEANUP => 0, $tmp ? (DIR => $tmp) : File::Spec->tmpdir);
-state $logdir = tempdir('ppp-log-XXXXX'   , CLEANUP => 0, $log ? (DIR => $log) : File::Spec->tmpdir);
+state $img_dir = 'tmp'; # where to put created images
+state $log_dir = 'tmp'; # where to put logfiles
 
 MAIN: {
+  mkdir $img_dir unless -d $img_dir;
+  mkdir $log_dir unless -d $log_dir;
   while(<>) {
     if ( (my $start = /^~{3,}\s*\{.*?(?<format>rdfdot|ditaa|dot|neato|yuml|plantuml)(?<attributes>.*)\}.*/) ... (my $end = /^~{3,}\s*$/) ) {
         $start ? begin_ppp() : $end ? end_ppp() : print {$outfile} $_
@@ -67,7 +70,38 @@ SUBS: {
     $fileno++;
     $format = $+{format};
     $attributes{$fileno.$format} = $+{attributes};
-    open $outfile, '>', "$tmpdir/image-$fileno.$format"
+    open $outfile, '>', "$img_dir/image-$fileno.$format"
+  }
+
+  # path and filename of the current image with selected extension
+  sub image {
+    $img_dir."/image-$fileno.$_[0]";
+  }
+
+  # call 'system' with sprintf and STDOUT/STDERR to logfile
+  sub ssystemf {
+    my ($s, @a) = @_;
+    my $cmd  = sprintf $s, @a;
+    my $name = substr($cmd,0,index($cmd,' '));
+    die "$name not available!\n" unless `which $name`;
+    print STDERR "$cmd\n" if $verbose;
+    system("$cmd 2>&1 >> $log_dir/$name.log");
+  }
+
+  # scale/resize an image given by filename according to attributes 'dpi' and 'scale'
+  sub scale_image {
+    my ($attrs, $image) = @_;
+
+    if ($attrs->{dpi}) {
+        my $dpi_x = $attrs->{dpi} =~ /^(\d+)x(\d+)$/ ? $1 : $attrs->{dpi};
+        my $dpi_y = $attrs->{dpi} =~ /^(\d+)x(\d+)$/ ? $2 : $attrs->{dpi};
+        ssystemf("convert -units PixelsPerInch -density %.0fx%.0f %s %s %s",
+            $dpi_x, $dpi_y, $image, $image, $img_dir/$image);
+    }
+
+    if ($attrs->{scale}) {
+        ssystemf("mogrify -scale %s %s", $attrs->{scale}, $image);
+    }
   }
 
   sub render {
@@ -150,16 +184,58 @@ SUBS: {
     my %attrs = map { /(.+?)=(["']?.+["']?)/ ? ($1 => $2) : ($_ => 1) } split /\s+\./, $attributes{$fileno.$format};
     if( my $child = fork == 0 ) {
        push @children, $child;
-       render($format, $fileno, %attrs);
-       scale($format, $fileno, %attrs);
+       $format =~ /^ditaa$/ and do {
+         my $cmd =
+          "ditaa " .
+          (exists $attrs{"rounded-corners"} ? '--round-corners ' : ' ') .
+          (exists $attrs{"no-shadows"}      ? '--no-shadows '    : ' ') .
+          (exists $attrs{"no-separation"}   ? '--no-separation ' : ' ') .
+          (exists $attrs{"no-antialias"}    ? '--no-antialias '  : ' ') .
+          " ".image($format)." ".image("png");
+         ssystemf($cmd);
+         scale_image(\%attrs, image("png"));
+       };
+       $format =~ /^rdfdot$/ and do {
+         ssystemf("rdfdot -ttl %s %s", image($format), image("png"));
+         scale_image(\%attrs, image("png"));
+       };
+       $format =~ /^dot$/ and do {
+         my $dpi = $attrs{dpi} || '';
+         if ($dpi) {
+           $dpi =~ s/x.*//;
+           $dpi = "-Gdpi=$dpi";
+         }  
+         ssystemf("dot -Tpng %s -o %s %s", $dpi, image("png"), image($format));
+         scale_image(\%attrs, image("png"));
+       };
+       $format =~ /^neato$/ and do {
+         ssystemf("neato -Tpng -o %s %s", image("png"), image($format));
+         scale_image(\%attrs, image("png"));
+       };
+       $format =~ /^yuml$/ and do {
+         my $cmd =
+           "yuml " .
+           (exists $attrs{"type"}       ? "--type  @{[$attrs{type}      ]} ": '--type=class ') .
+           (exists $attrs{"style"}      ? "--style @{[$attrs{style}     ]} ": '--style=boring ') .
+           (exists $attrs{"direction"}  ? "--dir   @{[$attrs{direction} ]} ": '--dir=LR ') .
+           " --in ".image($format)." --out ".image("png")
+         ;
+         ssystemf($cmd);
+         scale_image(\%attrs, image("png"));
+       };
+       $format =~ /^plantuml$/ and do {
+         ssystemf("plantuml -tpng -charset UTF-8 ".image($format));
+         scale_image(\%attrs, image("png"));
+       };
        exit 0;
     }
 
+    # TODO: don't insert image if system call failed
     $format =
       "![" . (exists $attrs{title} ? $attrs{title} : '' )
            . (exists $attrs{label} ? "\\label{$attrs{label}}" : '' ).
       "]"  .
-      "($tmpdir/image-$fileno.png)" .
+      "(".image("png").")" .
       (exists $attrs{inline} ? '\\ ' : '')
     ;
     say STDOUT $format;
