@@ -1,4 +1,4 @@
-#!/usr/bin/env perl -s
+#!/usr/bin/env perl
 
 package main;
 
@@ -12,9 +12,35 @@ use File::Spec;
 use File::Temp 'tempdir';
 use File::Path 'make_path';
 
-# These can be set like: `ppp -tmp=tmpdir -log=logdir`
-our $tmp;
-our $log;
+# configuration set as --key value at command line or as key=value from file
+our %config;
+our ($tmp, $log);
+
+# load configuration from file in current directory if given
+{
+    if (local @ARGV = grep { -e $_ } qw(.ppprc ppp.conf)) {
+        while (<>) { # parse simple "key = value" pairs
+            $config{$1} = $2 if /^\s*(\w+)\s*=\s*(.*?)\s*$/;
+        }
+    }
+}
+
+# parse command line options
+while (@ARGV) {
+    last unless $ARGV[0] =~ /^--(\w*)$/; # --key
+    last unless length($1);              # "--" stops option parsing
+    shift @ARGV;
+    $config{$1} = (@ARGV && $ARGV[0] !~ /^--(\w*)$/) 
+                ? shift @ARGV : 1;       # --key  or --key value
+}
+
+# register known options as global variables
+{
+    no strict 'refs';
+    for my $name (qw(tmp log)) {
+        $$name = $config{$name} if defined $config{$name};
+    }
+}
 
 create_directories($tmp, $log);
 
