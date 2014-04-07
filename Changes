@@ -1,6 +1,7 @@
 {{$NEXT}}
 
   - don't use Zilla::Plugin::Fatpacker: it leaves off the shebang and renders executable useless.
+  - better handling of commandline arguments
 
 0.9.0     2014-03-31 23:54:27 Europe/Berlin
 
