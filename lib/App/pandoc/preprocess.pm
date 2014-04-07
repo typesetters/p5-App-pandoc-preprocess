@@ -53,6 +53,6 @@ write to their individual log-files
 * check whether ditaa has file.encoding set
 * bundle ditaa with this
 
-=end wikidoc
+=cut
 
 'make CPAN happy -- we only have a main in bin/ppp'
