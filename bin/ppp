@@ -30,7 +30,7 @@ while (@ARGV) {
     last unless $ARGV[0] =~ /^--(\w*)$/; # --key
     last unless length($1);              # "--" stops option parsing
     shift @ARGV;
-    $config{$1} = (@ARGV && $ARGV[0] !~ /^--(\w*)$/) 
+    $config{$1} = (@ARGV && $ARGV[0] !~ /^--(\w*)$/)
                 ? shift @ARGV : 1;       # --key  or --key value
 }
 
