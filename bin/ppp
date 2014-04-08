@@ -14,7 +14,7 @@ use File::Path 'make_path';
 
 # configuration set as --key value at command line or as key=value from file
 our %config;
-our ($tmp, $log);
+our ($img, $log);
 
 # load configuration from file in current directory if given
 {
@@ -37,20 +37,20 @@ while (@ARGV) {
 # register known options as global variables
 {
     no strict 'refs';
-    for my $name (qw(tmp log)) {
+    for my $name (qw(img log)) {
         $$name = $config{$name} if defined $config{$name};
     }
 }
 
-create_directories($tmp, $log);
+create_directories($img, $log);
 
 state $fileno = 0;
 state $outfile;
 state $format;
 state @children;
 state %attributes;
-state $tmpdir = tempdir('ppp-render-XXXXX', CLEANUP => 0, $tmp ? (DIR => $tmp) : File::Spec->tmpdir);
-state $logdir = tempdir('ppp-log-XXXXX'   , CLEANUP => 0, $log ? (DIR => $log) : File::Spec->tmpdir);
+state $imgdir = defined $img ? $img : tempdir('ppp-render-XXXXX', CLEANUP => 0, TMPDIR => 1);
+state $logdir = defined $log ? $log : tempdir('ppp-log-XXXXX'   , CLEANUP => 0, TMPDIR => 1);
 
 MAIN: {
   while(<>) {
@@ -67,7 +67,7 @@ SUBS: {
     $fileno++;
     $format = $+{format};
     $attributes{$fileno.$format} = $+{attributes};
-    open $outfile, '>', "$tmpdir/image-$fileno.$format"
+    open $outfile, '>', "$imgdir/image-$fileno.$format"
   }
 
   sub render {
@@ -80,25 +80,25 @@ SUBS: {
            . " @{[exists $attrs{'no-shadows'}      ? '--no-shadows '    : ' ']}"
            . " @{[exists $attrs{'no-separation'}   ? '--no-separation ' : ' ']}"
            . " @{[exists $attrs{'no-antialias'}    ? '--no-antialias '  : ' ']}"
-           . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.png"
+           . " $imgdir/image-$fileno.$format $imgdir/image-$fileno.png"
            . " 2>&1 >>$logdir/ditaa.log";
 
     $format =~ /^rdfdot$/ and
       $cmd = "rdfdot"
            . " -ttl"
-           . " $tmpdir/image-$fileno.$format $tmpdir/image-$fileno.svg"
+           . " $imgdir/image-$fileno.$format $imgdir/image-$fileno.svg"
            . " 2>&1 >>$logdir/rdfdot.log";
 
     $format =~ /^dot$/ and
       $cmd = "dot"
            . " -Tsvg"
-           . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format"
+           . " -o $imgdir/image-$fileno.svg $imgdir/image-$fileno.$format"
            . " 2>&1 >>$logdir/dot.log";
 
     $format =~ /^neato$/ and
       $cmd = "neato"
            . " -Tsvg "
-           . " -o $tmpdir/image-$fileno.svg $tmpdir/image-$fileno.$format "
+           . " -o $imgdir/image-$fileno.svg $imgdir/image-$fileno.$format "
            . " 2>&1 >>$logdir/neato.log";
 
     $format =~ /^yuml$/ and
@@ -107,14 +107,14 @@ SUBS: {
            . " --type  @{[exists $attrs{type}      ? $attrs{type}     : 'class']}"
            . " --style @{[exists $attrs{style}     ? $attrs{style}    : 'nofunky']}"
            . " --dir   @{[exists $attrs{direction} ? $attrs{direction}: 'LR']}"
-           . " --in $tmpdir/image-$fileno.$format --out $tmpdir/image-$fileno.svg"
+           . " --in $imgdir/image-$fileno.$format --out $imgdir/image-$fileno.svg"
            . " 2>&1 >>$logdir/yuml.log";
 
     $format =~ /^plantuml$/ and
       $cmd = "plantuml"
            . " -tsvg "
            . " -charset UTF-8"
-           . " $tmpdir/image-$fileno.$format"
+           . " $imgdir/image-$fileno.$format"
            . " 2>&1 >>$logdir/plantuml.log";
 
     ### $cmd
@@ -129,15 +129,15 @@ SUBS: {
     if ($format =~ /^(ditaa)$/) {
       $cmd = "mogrify"
            . " -scale @{[exists $attrs{scale} ? $attrs{scale} : '100%']}"
-           . " $tmpdir/image-$fileno.png"
+           . " $imgdir/image-$fileno.png"
            . " 2>&1 >>$logdir/mogrify.log";
     } else {
       my $scale = exists $attrs{scale} ? do { $_ = $attrs{scale}; s/%//; $_/100 }: 1.0;
       $cmd = "rsvg-convert"
            . " --zoom $scale"
            . " --format png"
-           . " --output $tmpdir/image-$fileno.png"
-           . " $tmpdir/image-$fileno.svg"
+           . " --output $imgdir/image-$fileno.png"
+           . " $imgdir/image-$fileno.svg"
            . " 2>&1 >>$logdir/plantuml.log";
     };
     ### $cmd
@@ -159,7 +159,7 @@ SUBS: {
       "![" . (exists $attrs{title} ? $attrs{title} : '' )
            . (exists $attrs{label} ? "\\label{$attrs{label}}" : '' ).
       "]"  .
-      "($tmpdir/image-$fileno.png)" .
+      "($imgdir/image-$fileno.png)" .
       (exists $attrs{inline} ? '\\ ' : '')
     ;
     say STDOUT $format;
