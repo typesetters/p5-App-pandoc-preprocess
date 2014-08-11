@@ -1,4 +1,5 @@
 {{$NEXT}}
+  - change directory options to --img and --log 
 
 0.9.4     2014-04-07 17:31:14 Europe/Berlin
 

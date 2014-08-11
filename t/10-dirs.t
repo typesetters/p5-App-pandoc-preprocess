@@ -17,7 +17,7 @@ tie $stderr, 'IPC::Shareable', 'stderr', { create => 'true' } or die "tie failed
 sub ppp(@) {
     $stdout = undef;
     $stderr = undef;
-    
+
     my $pid = fork();
     if ($pid == 0) {
         local @ARGV = @_;
