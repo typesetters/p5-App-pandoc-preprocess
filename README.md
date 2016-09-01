@@ -4,7 +4,7 @@ Preprocess Pandoc before Processing Pandoc
 
 # VERSION
 
-version v0.9.9
+version v0.9.10
 
 # AUTHOR
 
