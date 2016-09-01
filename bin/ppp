@@ -180,6 +180,8 @@ SUBS: {
 END {
   while (1) {
     my $child = waitpid(-1, 0);
-    last if $child == -1;       # No more outstanding children
+    exit 0 if $child == -1;       # No more outstanding children
   }
 }
+
+1;
